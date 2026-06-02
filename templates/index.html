@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriFuse - Unified Digital Farming Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- Header with Persistent Navigation -->
+    <header>
+        <div class="header-content">
+            <div class="top-row">
+                <div class="logo">
+                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Agrifuse Logo"
+                        style="height: 40px; border-radius: 8px;">
+                    <span class="lang-en">AgriFuse</span><span class="lang-hi" style="display:none;">एग्रीफ्यूज़</span>
+                </div>
+                <button class="hamburger-menu" id="hamburger-menu" onclick="app.toggleMobileMenu()">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </button>
+            </div>
+
+            <!-- Navigation Bar -->
+            <nav class="main-nav" id="main-nav">
+                <button class="nav-link active" onclick="app.router('dashboard')">
+                    <span class="lang-en">Home</span><span class="lang-hi" style="display:none;">होम</span>
+                </button>
+                <button class="nav-link" onclick="app.router('plant-ai')">
+                    <span class="lang-en">Plant AI</span><span class="lang-hi" style="display:none;">एआई पहचान</span>
+                </button>
+                <button class="nav-link" onclick="app.router('subsidy')">
+                    <span class="lang-en">Subsidy</span><span class="lang-hi" style="display:none;">सब्सिडी</span>
+                </button>
+                <button class="nav-link" onclick="app.router('breedify')">
+                    <span class="lang-en">Breed Info</span><span class="lang-hi" style="display:none;">नस्ल
+                        जानकारी</span>
+                </button>
+                <button class="nav-link" onclick="app.router('chatbot')">
+                    <span class="lang-en">Chatbot</span><span class="lang-hi" style="display:none;">चैटबॉट</span>
+                </button>
+                <button class="nav-link" onclick="app.router('crop-intel')">
+                    <span class="lang-en">Crop Intel</span><span class="lang-hi" style="display:none;">फसल
+                        जानकारी</span>
+                </button>
+                <button class="nav-link" onclick="app.router('disease')">
+                    <span class="lang-en">Disease Guide</span><span class="lang-hi" style="display:none;">रोग
+                        मार्गदर्शन</span>
+                </button>
+
+                <button class="nav-link lang-toggle" onclick="app.toggleLanguage()"
+                    style="background:var(--secondary-color); color: var(--text-dark); border: 1px solid var(--primary-light);">
+                    🌍 <span class="lang-en">हिंदी</span><span class="lang-hi" style="display:none;">English</span>
+                </button>
+
+                <button class="nav-link" id="nav-login" onclick="app.router('auth')"
+                    style="background: var(--accent-blue); color: white;">
+                    <span class="lang-en">Login / Register</span><span class="lang-hi" style="display:none;">लॉगिन /
+                        रजिस्टर</span>
+                </button>
+                <button class="nav-link" id="nav-logout" onclick="app.logout()"
+                    style="display: none; background: #dc3545; color: white;">
+                    <span class="lang-en">Logout</span><span class="lang-hi" style="display:none;">लॉगआउट</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <!-- 1️⃣ DASHBOARD PAGE -->
+        <section id="dashboard" class="page active">
+            <div class="homepage-hero"
+                style="position:relative; width:100%; height:300px; border-radius:16px; overflow:hidden; margin-bottom:2rem; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                <img src="{{ url_for('static', filename='img/hero.png') }}"
+                    style="width:100%; height:100%; object-fit:cover;" alt="Smart Farm Hero">
+                <div
+                    style="position:absolute; inset:0; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.2)); display:flex; flex-direction:column; justify-content:center; padding-left: 3rem;">
+                    <h1
+                        style="color:white; font-size:3.5rem; text-align:left; margin:0; text-shadow:2px 2px 4px rgba(0,0,0,0.5);">
+                        <span class="lang-en">AgriFuse Dashboard</span><span class="lang-hi"
+                            style="display:none;">एग्रीफ्यूज़ डैशबोर्ड</span>
+                    </h1>
+                    <p style="color:#e0e0e0; font-size:1.2rem; max-width:500px; margin-top:0.5rem;">
+                        <span class="lang-en">Your complete digital farming companion</span>
+                        <span class="lang-hi" style="display:none;">आपका संपूर्ण डिजिटल कृषि साथी</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- 🌤️ LIVE WEATHER HERO INTEGRATION -->
+            <div class="weather-search-container"
+                style="display: flex; gap: 10px; margin-bottom: 1.5rem; justify-content: center; align-items: center; background: white; padding: 1rem 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 5px solid var(--accent-blue);">
+                <span style="font-size: 1.5rem; flex-shrink: 0;">🌍</span>
+                <input type="text" id="weather-search" placeholder="Enter City/Village Name for Live Weather"
+                    style="flex: 1; padding: 12px 20px; border-radius: 25px; border: 2px solid #e2e8f0; font-size: 1rem; outline: none; transition: 0.3s; max-width: 400px; background: #f8fafc; min-width: 0;">
+                <button onclick="app.fetchWeather()"
+                    style="background: var(--accent-blue); color: white; padding: 12px 30px; border: none; border-radius: 25px; cursor: pointer; font-weight: 600; font-size: 1rem; transition: 0.3s; box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3); white-space: nowrap;">Check
+                    Live Weather</button>
+            </div>
+
+            <!-- Compact Weather + Marketplace Row -->
+            <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                <!-- Compact Weather Card -->
+                <div class="weather-card weather-card-compact" id="weather-hero"
+                    style="display: flex; flex-wrap: wrap; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e0e0e0; flex: 1; min-width: 280px;">
+                    <div class="weather-info-main"
+                        style="flex: 1; min-width: 180px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1rem; text-align: center;">
+                        <h2 id="weather-loc" style="font-size: 1.1rem; margin-bottom: 0.1rem; color: white; border: none;">
+                            📍 Delhi, India</h2>
+                        <div id="weather-temp" class="temp-value"
+                            style="font-size: 2.5rem; font-weight: bold; margin: 0.3rem 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+                            ☀️ 28°C</div>
+                        <p id="weather-cond" style="font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: 600;">Partly Cloudy</p>
+                        <div
+                            style="display: flex; justify-content: center; gap: 1rem; background: rgba(255,255,255,0.2); border-radius: 10px; padding: 0.4rem; max-width: 280px; margin: 0 auto; backdrop-filter: blur(5px);">
+                            <p style="margin: 0; font-size: 0.8rem; font-weight: 500;">💧 <span
+                                    class="lang-en">Humidity</span><span class="lang-hi" style="display:none;">नमी</span>:
+                                <span id="weather-humid">65%</span>
+                            </p>
+                            <p style="margin: 0; font-size: 0.8rem; font-weight: 500;">💨 <span
+                                    class="lang-en">Wind</span><span class="lang-hi" style="display:none;">हवा</span>: <span
+                                    id="weather-wind">12 km/h</span></p>
+                        </div>
+                    </div>
+                    <div class="weather-advice-section"
+                        style="flex: 1; min-width: 180px; padding: 1rem; display: flex; flex-direction: column; justify-content: center; background: white;">
+                        <h3
+                            style="color: var(--text-dark); font-size: 1rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 6px;">
+                            🌱 <span class="lang-en">Watering Advice</span><span class="lang-hi"
+                                style="display:none;">सिंचाई सलाह</span>
+                        </h3>
+                        <div id="weather-watering" class="advice-container"
+                            style="background: var(--secondary-color); padding: 0.7rem; border-radius: 10px; font-size: 0.85rem; color: #555; line-height: 1.4; border-left: 3px solid var(--primary-color);">
+                            <span class="lang-en">Loading advice...</span><span class="lang-hi" style="display:none;">सलाह
+                                लोड हो रही है...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Marketplace Card -->
+                <div class="marketplace-hero-card" onclick="app.router('marketplace')">
+                    <div class="marketplace-hero-bg"></div>
+                    <div class="marketplace-hero-content">
+                        <div class="marketplace-hero-icon">🏪</div>
+                        <h2 class="marketplace-hero-title">
+                            <span class="lang-en">Marketplace</span>
+                            <span class="lang-hi" style="display:none;">मार्केटप्लेस</span>
+                        </h2>
+                        <p class="marketplace-hero-desc">
+                            <span class="lang-en">Buy, sell crops & trade carbon credits</span>
+                            <span class="lang-hi" style="display:none;">फसलें खरीदें, बेचें और कार्बन क्रेडिट ट्रेड करें</span>
+                        </p>
+                        <div class="marketplace-hero-btn">
+                            <span class="lang-en">Explore →</span>
+                            <span class="lang-hi" style="display:none;">खोलें →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🌾 REAL-TIME CROP MARKET PRICES (Collapsible) -->
+            <div class="analytics-toggle-card" onclick="app.toggleMandiPrices()"
+                style="border-left-color: var(--accent-blue); margin-bottom: 1rem;">
+                <div class="title-group">
+                    <span style="font-size: 1.8rem;">🌾</span>
+                    <h2><span class="lang-en">Market Mandi Prices</span><span class="lang-hi" style="display:none;">मंडी
+                            भाव</span></h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-left: auto; margin-right: 15px;">
+                    <div
+                        style="display: flex; align-items: center; gap: 8px; background: #f0f7ff; padding: 4px 12px; border-radius: 15px; border: 1px solid #d0e3ff;">
+                        <span style="font-size: 0.8rem; color: #666;">📍</span>
+                        <span id="market-loc-display"
+                            style="font-weight: 600; color: var(--text-dark); font-size: 0.9rem;">Delhi Mandi</span>
+                    </div>
+                </div>
+                <span class="toggle-icon" id="mandi-icon">▼</span>
+            </div>
+
+            <div id="market-prices-section" class="analytics-content" style="margin-bottom: 3rem;">
+                <div id="market-grid" class="market-grid" style="padding: 10px 0;">
+                    <!-- Loaded via JS -->
+                    <div
+                        style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #666; background: white; border-radius: 16px; box-shadow: var(--card-shadow);">
+                        <div class="loading-spinner"
+                            style="border: 4px solid #f3f3f3; border-top: 4px solid var(--accent-blue); border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 0 auto 1rem;">
+                        </div>
+                        <span class="lang-en">Fetching live market prices for your location...</span><span
+                            class="lang-hi" style="display:none;">आपकी लोकेशन के लिए मंडी भाव लोड हो रहे हैं...</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- 📈 DATA ANALYTICS & INSIGHTS (Collapsible) -->
+            <div class="analytics-toggle-card" onclick="app.toggleAnalytics()">
+                <div class="title-group">
+                    <span style="font-size: 1.8rem;">📊</span>
+                    <h2>Farming Analytics & Insights</h2>
+                </div>
+                <span class="toggle-icon" id="analytics-icon">▼</span>
+            </div>
+
+            <div id="analytics-section" class="analytics-content">
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; padding: 10px 0;">
+                    <div
+                        style="background: white; padding: 1.2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;">
+                        <h3
+                            style="margin-bottom: 0.8rem; color: var(--text-dark); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.4rem;">
+                            Weather Trends (Past 30 Days)</h3>
+                        <canvas id="weatherTrendsChart"></canvas>
+                    </div>
+
+
+                    <div
+                        style="background: white; padding: 1.2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;">
+                        <h3
+                            style="margin-bottom: 0.8rem; color: var(--text-dark); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.4rem;">
+                            Breed Milk Production Comparison</h3>
+                        <canvas id="breedMilkChart"></canvas>
+                    </div>
+
+                    <div
+                        style="background: white; padding: 1.2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;">
+                        <h3
+                            style="margin-bottom: 0.8rem; color: var(--text-dark); font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 0.4rem;">
+                            Crop Disease Frequency</h3>
+                        <canvas id="diseaseFreqChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">🌟
+                Explore Our Modules</h2>
+            <div class="dashboard-grid">
+                <!-- Module 1: Plant AI -->
+                <div class="module-card"
+                    style="--bg-image: url('{{ url_for('static', filename='img/cards/disease.png') }}');">
+                    <div>
+                        <div class="module-icon">🍃</div>
+                        <h2><span class="lang-en">Plant AI</span><span class="lang-hi"
+                                style="display:none;">एआई पहचान</span></h2>
+                        <p><span class="lang-en">Detect plant diseases using advanced AI technology</span><span
+                                class="lang-hi" style="display:none;">उन्नत एआई तकनीक का उपयोग करके पौधों की बीमारियों का पता लगाएं</span></p>
+                    </div>
+                    <button class="card-btn" onclick="app.router('plant-ai')"><span class="lang-en">Open
+                            Module</span><span class="lang-hi" style="display:none;">खोलें</span></button>
+                </div>
+
+                <!-- Module 2: Subsidy -->
+                <div class="module-card"
+                    style="--bg-image: url('https://media.licdn.com/dms/image/v2/D5612AQGu-5uQMvMLwg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1709718330660?e=2147483647&v=beta&t=1sEqgztNvDqTVx0jE9J7J-yfyuLfVjw1-ujCGC-g3bo');">
+                    <div>
+                        <div class="module-icon">🏛️</div>
+                        <h2><span class="lang-en">Subsidy Checker</span><span class="lang-hi"
+                                style="display:none;">सब्सिडी चेकर</span></h2>
+                        <p><span class="lang-en">Discover government schemes you qualify for</span><span class="lang-hi"
+                                style="display:none;">उन सरकारी योजनाओं की खोज करें जिनके लिए आप योग्य हैं</span></p>
+                    </div>
+                    <button class="card-btn" onclick="app.router('subsidy')"><span class="lang-en">Open
+                            Module</span><span class="lang-hi" style="display:none;">खोलें</span></button>
+                </div>
+
+                <!-- Module 3: Breedify -->
+                <div class="module-card"
+                    style="--bg-image: url('{{ url_for('static', filename='img/cards/breed.png') }}');">
+                    <div>
+                        <div class="module-icon">🐄</div>
+                        <h2><span class="lang-en">Breedify</span><span class="lang-hi" style="display:none;">ब्रीडिफाई
+                                पशु जानकारी</span></h2>
+                        <p><span class="lang-en">Livestock breeds, yield stats & veterinary contacts</span><span
+                                class="lang-hi" style="display:none;">पशुओं की नस्लें, उपज के आँकड़े और पशु चिकित्सक के
+                                संपर्क</span></p>
+                    </div>
+                    <button class="card-btn" onclick="app.router('breedify')"><span class="lang-en">Open
+                            Module</span><span class="lang-hi" style="display:none;">खोलें</span></button>
+                </div>
+
+                <!-- Module 4: Chatbot -->
+                <div class="module-card"
+                    style="--bg-image: url('{{ url_for('static', filename='img/cards/chatbot.png') }}');">
+                    <div>
+                        <div class="module-icon">🤖</div>
+                        <h2><span class="lang-en">AI Farm Chatbot</span><span class="lang-hi" style="display:none;">एआई
+                                फार्म चैटबॉट</span></h2>
+                        <p><span class="lang-en">Get instant 24/7 agriculture advice and support</span><span
+                                class="lang-hi" style="display:none;">तत्काल 24/7 कृषि सलाह और सहायता प्राप्त
+                                करें</span></p>
+                    </div>
+                    <button class="card-btn" onclick="app.router('chatbot')"><span class="lang-en">Open
+                            Module</span><span class="lang-hi" style="display:none;">खोलें</span></button>
+                </div>
+
+                <!-- Module 5: Crop Intel -->
+                <div class="module-card"
+                    style="--bg-image: url('{{ url_for('static', filename='img/cards/crop.png') }}');">
+                    <div>
+                        <div class="module-icon">🌾</div>
+                        <h2><span class="lang-en">Crop & Soil Intel</span><span class="lang-hi"
+                                style="display:none;">फसल और मिट्टी की जानकारी</span></h2>
+                        <p><span class="lang-en">Detailed guide on crops, seasons & soil requirements</span><span
+                                class="lang-hi" style="display:none;">फसलों, मौसमों और मिट्टी की आवश्यकताओं पर विस्तृत
+                                मार्गदर्शिका</span></p>
+                    </div>
+                    <button class="card-btn" onclick="app.router('crop-intel')"><span class="lang-en">Open
+                            Module</span><span class="lang-hi" style="display:none;">खोलें</span></button>
+                </div>
+
+                <!-- Module 6: Disease Guide -->
+                <div class="module-card"
+                    style="--bg-image: url('{{ url_for('static', filename='img/cards/disease.png') }}');">
+                    <div>
+                        <div class="module-icon">🏥</div>
+                        <h2><span class="lang-en">Crop Disease Guide</span><span class="lang-hi"
+                                style="display:none;">फसल रोग गाइड</span></h2>
+                        <p><span class="lang-en">Identify and treat devastating plant diseases easily</span><span
+                                class="lang-hi" style="display:none;">पौधों के विनाशकारी रोगों की आसानी से पहचान और
+                                उपचार करें</span></p>
+                    </div>
+                    <button class="card-btn" onclick="app.router('disease')"><span class="lang-en">Open
+                            Module</span><span class="lang-hi" style="display:none;">खोलें</span></button>
+                </div>
+
+                <!-- Module 8: CarbonAid -->
+                <div class="module-card"
+                    style="--bg-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                    <div>
+                        <div class="module-icon">🌱</div>
+                        <h2><span class="lang-en">CarbonAid</span><span class="lang-hi"
+                                style="display:none;">कार्बन एड</span></h2>
+                        <p><span class="lang-en">Earn money by planting trees & selling carbon credits</span><span class="lang-hi"
+                                style="display:none;">पेड़ लगाकर और कार्बन क्रेडिट बेचकर पैसा कमाएं</span></p>
+                    </div>
+                    <a href="/carbonaid" class="card-btn" style="text-decoration: none; display: flex; align-items: center; justify-content: center;"><span class="lang-en">Open
+                            Platform</span><span class="lang-hi" style="display:none;">प्लेटफार्म खोलें</span></a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MARKETPLACE PAGE -->
+        <section id="marketplace" class="page">
+            <h1 style="color: rgb(21, 128, 61);">
+                <span class="lang-en">🏪 Marketplace</span>
+                <span class="lang-hi" style="display:none;">🏪 मार्केटप्लेस</span>
+            </h1>
+            <p class="bilingual">
+                <span class="lang-en">"Choose a marketplace to get started"</span>
+                <span class="lang-hi" style="display:none;">"शुरू करने के लिए एक मार्केटप्लेस चुनें"</span>
+            </p>
+
+            <div class="marketplace-options-grid">
+                <!-- Crop Marketplace Card -->
+                <div class="marketplace-option-card" id="crop-marketplace-card" onclick="app.router('crop-market')">
+                    <div class="mp-option-icon-wrap" style="background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);">
+                        <span class="mp-option-icon">🌾</span>
+                    </div>
+                    <h3 class="mp-option-title">
+                        <span class="lang-en">Crop Marketplace</span>
+                        <span class="lang-hi" style="display:none;">फसल मार्केटप्लेस</span>
+                    </h3>
+                    <p class="mp-option-desc">
+                        <span class="lang-en">Buy and sell crops directly. List your harvest or find fresh produce from local farmers.</span>
+                        <span class="lang-hi" style="display:none;">सीधे फसल खरीदें और बेचें। अपनी फसल लिस्ट करें या स्थानीय किसानों से ताजा उत्पाद प्राप्त करें।</span>
+                    </p>
+                    <div class="mp-option-features">
+                        <span class="mp-feature-tag">📋 <span class="lang-en">List Crops</span><span class="lang-hi" style="display:none;">फसल लिस्ट करें</span></span>
+                        <span class="mp-feature-tag">🛒 <span class="lang-en">Buy Crops</span><span class="lang-hi" style="display:none;">फसल खरीदें</span></span>
+                        <span class="mp-feature-tag">💰 <span class="lang-en">Fair Prices</span><span class="lang-hi" style="display:none;">उचित मूल्य</span></span>
+                    </div>
+                    <button class="mp-option-btn" style="background: var(--primary-color);">
+                        <span class="lang-en">Enter Crop Market →</span>
+                        <span class="lang-hi" style="display:none;">फसल मार्केट खोलें →</span>
+                    </button>
+                </div>
+
+                <!-- CarbonAid Marketplace Card -->
+                <div class="marketplace-option-card" id="carbonaid-marketplace-card" onclick="app.router('carbon-market')">
+                    <div class="mp-option-icon-wrap" style="background: linear-gradient(135deg, #2196F3 0%, #64b5f6 100%);">
+                        <span class="mp-option-icon">🌱</span>
+                    </div>
+                    <h3 class="mp-option-title">
+                        <span class="lang-en">CarbonAid Marketplace</span>
+                        <span class="lang-hi" style="display:none;">कार्बन एड मार्केटप्लेस</span>
+                    </h3>
+                    <p class="mp-option-desc">
+                        <span class="lang-en">Trade carbon credits from eco-friendly farming. Upload your activities and let industries invest in your green efforts.</span>
+                        <span class="lang-hi" style="display:none;">पर्यावरण-अनुकूल खेती से कार्बन क्रेडिट का व्यापार करें। अपनी गतिविधियाँ अपलोड करें।</span>
+                    </p>
+                    <div class="mp-option-features">
+                        <span class="mp-feature-tag">🌿 <span class="lang-en">Eco Activities</span><span class="lang-hi" style="display:none;">पर्यावरण गतिविधियाँ</span></span>
+                        <span class="mp-feature-tag">💚 <span class="lang-en">Carbon Credits</span><span class="lang-hi" style="display:none;">कार्बन क्रेडिट</span></span>
+                        <span class="mp-feature-tag">🏭 <span class="lang-en">Industry Buyers</span><span class="lang-hi" style="display:none;">उद्योग खरीदार</span></span>
+                    </div>
+                    <button class="mp-option-btn" style="background: var(--accent-blue);">
+                        <span class="lang-en">Enter CarbonAid →</span>
+                        <span class="lang-hi" style="display:none;">कार्बन एड खोलें →</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CROP MARKETPLACE PAGE -->
+        <section id="crop-market" class="page">
+            <h1 style="color: rgb(21, 128, 61);">
+                <span class="lang-en">🌾 Crop Marketplace</span>
+                <span class="lang-hi" style="display:none;">🌾 फसल मार्केटप्लेस</span>
+            </h1>
+            <p class="bilingual">
+                <span class="lang-en">"Buy and sell crops directly from farmers"</span>
+                <span class="lang-hi" style="display:none;">"किसानों से सीधे फसल खरीदें और बेचें"</span>
+            </p>
+
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap;">
+                <button class="mp-tab-btn active" id="crop-browse-tab" onclick="app.showCropTab('browse')">🛒 <span class="lang-en">Browse Listings</span><span class="lang-hi" style="display:none;">लिस्टिंग देखें</span></button>
+                <button class="mp-tab-btn" id="crop-sell-tab" onclick="app.showCropTab('sell')">📋 <span class="lang-en">Sell Your Crop</span><span class="lang-hi" style="display:none;">अपनी फसल बेचें</span></button>
+            </div>
+
+            <!-- Browse Listings -->
+            <div id="crop-browse-section">
+                <div class="crop-listings-grid" id="crop-listings-container">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Sell Crop Form -->
+            <div id="crop-sell-section" style="display: none;">
+                <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: var(--card-shadow); max-width: 600px; margin: 0 auto; border-left: 5px solid var(--primary-color);">
+                    <h3 style="color: var(--text-dark); margin-bottom: 1rem;">📋 <span class="lang-en">List Your Crop</span><span class="lang-hi" style="display:none;">अपनी फसल लिस्ट करें</span></h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>🌾 <span class="lang-en">Crop Name</span><span class="lang-hi" style="display:none;">फसल का नाम</span></label>
+                            <input type="text" id="sell-crop-name" placeholder="e.g. Wheat, Rice">
+                        </div>
+                        <div class="form-group">
+                            <label>⚖️ <span class="lang-en">Quantity (Kg)</span><span class="lang-hi" style="display:none;">मात्रा (किलो)</span></label>
+                            <input type="number" id="sell-crop-qty" placeholder="e.g. 500" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>💰 <span class="lang-en">Price per Kg (₹)</span><span class="lang-hi" style="display:none;">प्रति किलो मूल्य (₹)</span></label>
+                            <input type="number" id="sell-crop-price" placeholder="e.g. 25" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>📍 <span class="lang-en">Location</span><span class="lang-hi" style="display:none;">स्थान</span></label>
+                            <input type="text" id="sell-crop-location" placeholder="e.g. Bhopal, MP">
+                        </div>
+                    </div>
+                    <button class="check-btn" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%); width: 100%;" onclick="app.addCropListing()">
+                        📤 <span class="lang-en">Post Listing</span><span class="lang-hi" style="display:none;">लिस्टिंग पोस्ट करें</span>
+                    </button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="card-btn" onclick="app.router('marketplace')" style="background: #666;">← <span class="lang-en">Back to Marketplace</span><span class="lang-hi" style="display:none;">मार्केटप्लेस पर वापस</span></button>
+            </div>
+        </section>
+
+        <!-- CARBONAID MARKETPLACE PAGE -->
+        <section id="carbon-market" class="page">
+            <h1 style="color: rgb(21, 128, 61);">
+                <span class="lang-en">🌱 CarbonAid Marketplace</span>
+                <span class="lang-hi" style="display:none;">🌱 कार्बन एड मार्केटप्लेस</span>
+            </h1>
+            <p class="bilingual">
+                <span class="lang-en">"Trade carbon credits from eco-friendly activities"</span>
+                <span class="lang-hi" style="display:none;">"पर्यावरण-अनुकूल गतिविधियों से कार्बन क्रेडिट का व्यापार करें"</span>
+            </p>
+
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap;">
+                <button class="mp-tab-btn active" id="carbon-browse-tab" onclick="app.showCarbonTab('browse')">🌿 <span class="lang-en">Browse Activities</span><span class="lang-hi" style="display:none;">गतिविधियाँ देखें</span></button>
+                <button class="mp-tab-btn" id="carbon-upload-tab" onclick="app.showCarbonTab('upload')">📤 <span class="lang-en">Upload Activity</span><span class="lang-hi" style="display:none;">गतिविधि अपलोड करें</span></button>
+            </div>
+
+            <!-- Browse Activities -->
+            <div id="carbon-browse-section">
+                <div class="crop-listings-grid" id="carbon-listings-container">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Upload Activity Form -->
+            <div id="carbon-upload-section" style="display: none;">
+                <div style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: var(--card-shadow); max-width: 600px; margin: 0 auto; border-left: 5px solid var(--accent-blue);">
+                    <h3 style="color: var(--text-dark); margin-bottom: 1rem;">🌿 <span class="lang-en">Upload Eco Activity</span><span class="lang-hi" style="display:none;">पर्यावरण गतिविधि अपलोड करें</span></h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>🌱 <span class="lang-en">Activity Type</span><span class="lang-hi" style="display:none;">गतिविधि प्रकार</span></label>
+                            <select id="carbon-activity-type">
+                                <option value="">-- Select --</option>
+                                <option value="tree_planting">🌳 Tree Planting</option>
+                                <option value="organic_farming">🌿 Organic Farming</option>
+                                <option value="solar_usage">☀️ Solar Energy Usage</option>
+                                <option value="water_conservation">💧 Water Conservation</option>
+                                <option value="waste_management">♻️ Waste Management</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>📝 <span class="lang-en">Description</span><span class="lang-hi" style="display:none;">विवरण</span></label>
+                            <input type="text" id="carbon-activity-desc" placeholder="e.g. Planted 50 neem trees">
+                        </div>
+                        <div class="form-group">
+                            <label>💚 <span class="lang-en">Carbon Credits</span><span class="lang-hi" style="display:none;">कार्बन क्रेडिट</span></label>
+                            <input type="number" id="carbon-credits" placeholder="e.g. 10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>💰 <span class="lang-en">Price per Credit (₹)</span><span class="lang-hi" style="display:none;">प्रति क्रेडिट मूल्य (₹)</span></label>
+                            <input type="number" id="carbon-price" placeholder="e.g. 500" min="1">
+                        </div>
+                    </div>
+                    <button class="check-btn" style="background: linear-gradient(135deg, var(--accent-blue) 0%, #1976D2 100%); width: 100%;" onclick="app.addCarbonListing()">
+                        📤 <span class="lang-en">Post Activity</span><span class="lang-hi" style="display:none;">गतिविधि पोस्ट करें</span>
+                    </button>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="card-btn" onclick="app.router('marketplace')" style="background: #666;">← <span class="lang-en">Back to Marketplace</span><span class="lang-hi" style="display:none;">मार्केटप्लेस पर वापस</span></button>
+            </div>
+        </section>
+
+
+        <!-- 3️⃣ NEW: CROP & SOIL INTELLIGENCE MODULE -->
+        <section id="crop-intel" class="page">
+            <h1 style="color: rgb(21, 128, 61);">🌾 Crop & Soil Intelligence</h1>
+            <p class=" bilingual">"Fasal aur mitti ki sampurna jaankari / Complete crop and soil information"</p>
+
+                <div class="crop-intel-container">
+                    <!-- Crop Selector -->
+                    <div class="crop-selector-card">
+                        <h3>🔍 Select Your Crop / Apni Fasal Chunein</h3>
+                        <select class="filter-select" id="crop-selector" onchange="app.renderCropDetails()">
+                            <option value="">-- Select Crop / Fasal Chunein --</option>
+                            <option value="wheat">Wheat (Gehu) - गेहूं</option>
+                            <option value="rice">Rice (Dhan) - धान</option>
+                            <option value="maize">Maize (Makka) - मक्का</option>
+                            <option value="cotton">Cotton (Kapas) - कपास</option>
+                            <option value="sugarcane">Sugarcane (Ganna) - गन्ना</option>
+                            <option value="mustard">Mustard (Sarson) - सरसों</option>
+                            <option value="chickpea">Chickpea (Chana) - चना</option>
+                            <option value="potato">Potato (Aloo) - आलू</option>
+                        </select>
+                    </div>
+
+                    <!-- Crop Details Display -->
+                    <div id="crop-details-container">
+                        <div class="crop-details-card" style="padding: 2rem; text-align: center; color: #666;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+                            <p>Please select a crop from the dropdown above to view details</p>
+                            <p class="bilingual">"Upar se fasal chunein / Select crop above"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: 2rem;">
+                    <h2 class="section-subtitle">💧 Crop Water Needs Comparison (Liters/Kg)</h2>
+                    <canvas id="cropIntelChart" style="max-height: 300px;"></canvas>
+                </div>
+        </section>
+
+        <!-- 4️⃣ BREEDIFY MODULE -->
+        <section id="breedify" class="page">
+            <h1 style="color: rgb(21, 128, 61);">🐄 Breedify - Animal Guide</h1>
+            <p class="bilingual">"Pashu Pehchan aur Nasl Jaankari / Animal Identification & Breed Info"</p>
+
+            <div class="filter-bar">
+                <select class="filter-select" id="breed-filter" onchange="app.handleBreedFilterChange()">
+                    <option value="all">All Animals / Sabhi Pashu</option>
+                    <option value="cow">Cow / Gaay</option>
+                    <option value="buffalo">Buffalo / Bhains</option>
+                    <option value="goat">Goat / Bakri</option>
+                </select>
+            </div>
+
+            <div
+                style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <h2 class="section-subtitle" style="margin-top:0;">📊 Milk Yield Comparison by Breed (Liters)</h2>
+                <canvas id="breedifyChart" style="max-height: 350px;"></canvas>
+            </div>
+
+            <h2 class="section-subtitle">📋 Animal Breeds / Pashu Ki Naslein</h2>
+            <div class="breed-grid" id="breed-container"></div>
+
+            <h2 class="section-subtitle">👨‍⚕️ Veterinary Doctors & Nearby Hospitals</h2>
+            <p class="bilingual">"Paas ke pashu chikitsak / Nearby animal doctors"</p>
+            <div class="vet-grid" id="vet-container"></div>
+
+            <h2 class="section-subtitle" id="disease-section-title">🦠 Possible Diseases & Prevention Tips</h2>
+            <p class="bilingual" id="disease-section-desc">"Bimariyon se bachav / Disease prevention"</p>
+            <div class="animal-disease-grid" id="animal-disease-container"></div>
+        </section>
+
+        <!-- 5️⃣ NEW: GOVERNMENT SUBSIDY ELIGIBILITY CHECKER -->
+        <section id="subsidy" class="page">
+            <h1 style="color: rgb(21, 128, 61);">🏛️ Government Subsidy Eligibility Checker</h1>
+            <p class="bilingual">"Sarkari yojanaon ke liye apni eligibility check karein / Check your eligibility for
+                government schemes"</p>
+
+            <div
+                style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text-dark);">Recent Subsidy Approvals
+                    (%) By State</h3>
+                <canvas id="subsidyChart" style="max-height: 250px;"></canvas>
+            </div>
+
+            <div class="subsidy-container">
+                <!-- Eligibility Form -->
+                <div class="subsidy-form-card">
+                    <h3>📝 Enter Your Details / Apni Jaankari Deyein</h3>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>📍 State / Rajya</label>
+                            <select id="subsidy-state">
+                                <option value="">-- Select State --</option>
+                                <option value="madhya-pradesh">Madhya Pradesh</option>
+                                <option value="uttar-pradesh">Uttar Pradesh</option>
+                                <option value="rajasthan">Rajasthan</option>
+                                <option value="maharashtra">Maharashtra</option>
+                                <option value="punjab">Punjab</option>
+                                <option value="haryana">Haryana</option>
+                                <option value="gujarat">Gujarat</option>
+                                <option value="bihar">Bihar</option>
+                                <option value="west-bengal">West Bengal</option>
+                                <option value="karnataka">Karnataka</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>📏 Land Size (in Hectares) / Zameen ka Size</label>
+                            <input type="number" id="subsidy-land" placeholder="e.g., 2.5" min="0" step="0.1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>🌾 Crop Type / Fasal Ka Prakar</label>
+                            <select id="subsidy-crop">
+                                <option value="">-- Select Crop --</option>
+                                <option value="wheat">Wheat (Gehu)</option>
+                                <option value="rice">Rice (Dhan)</option>
+                                <option value="cotton">Cotton (Kapas)</option>
+                                <option value="sugarcane">Sugarcane (Ganna)</option>
+                                <option value="mustard">Mustard (Sarson)</option>
+                                <option value="vegetables">Vegetables (Sabziyan)</option>
+                                <option value="fruits">Fruits (Phal)</option>
+                                <option value="pulses">Pulses (Daalen)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="check-btn" onclick="app.checkSubsidyEligibility()">
+                        🔍 Check Eligibility / Eligibility Check Karein
+                    </button>
+                </div>
+
+                <!-- Results Container -->
+                <div id="subsidy-results-container"></div>
+            </div>
+        </section>
+
+        <!-- 6️⃣ CHATBOT MODULE -->
+        <section id="chatbot" class="page">
+            <h1 style="color: rgb(21, 128, 61);">🤖 AI Farmer's Chatbot / Kisan Sahayak</h1>
+            <p class="bilingual">"Apne sawaal Hindi ya English mein poochein / Ask in Hindi or English"</p>
+
+            <div class="chat-container">
+                <div class="chat-window" id="chat-messages">
+                    <div class="message bot-msg">
+                        Namaste! 🙏 Main aapka AI kisan sahayak hoon. Aap mujhse kheti, fasal, mausam, sarkari yojana,
+                        ya pashu palan ke baare mein kuch bhi pooch sakte hain.<br><br>
+                        Hello! I am your AI farmer assistant. You can ask me anything about farming, crops, weather,
+                        government schemes, or animal husbandry.
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-input"
+                        placeholder="Type message / Sandesh likhein..."
+                        onkeypress="if(event.key === 'Enter') app.sendMessage()">
+                    <button class="send-btn" onclick="app.sendMessage()">Send ➤</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7️⃣.5️⃣ PLANT DISEASE DETECTION -->
+        <section id="plant-ai" class="page">
+            <h1 style="color: rgb(21, 128, 61);">
+                <span class="lang-en">🍃 Plant Disease Detection AI</span>
+                <span class="lang-hi" style="display:none;">🍃 पौधों की बीमारी पहचान AI</span>
+            </h1>
+            <p class="bilingual">
+                <span class="lang-en">"Detect plant diseases using advanced AI technology"</span>
+                <span class="lang-hi" style="display:none;">"उन्नत AI तकनीक का उपयोग करके पौधों की बीमारियों का पता लगाएं"</span>
+            </p>
+
+            <!-- PLANT DISEASE UPLOAD COMPONENT -->
+            <div style="background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 2rem; max-width: 750px; margin-left: auto; margin-right: auto; text-align: center; border: 2px dashed #4facfe;">
+                <h2 style="color: var(--primary-color); margin-bottom: 1rem;">
+                    <span class="lang-en">🍃 Upload Leaf Image for AI Diagnosis</span>
+                    <span class="lang-hi" style="display:none;">🍃 AI निदान के लिए पत्ती की छवि अपलोड करें</span>
+                </h2>
+                <input type="file" id="disease-image-upload" accept="image/jpeg, image/png, image/jpg"
+                    style="display: none;" onchange="app.previewAndUploadImage(event)">
+                <label for="disease-image-upload"
+                    style="background: var(--accent-blue); color: white; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-size: 1.1rem; display: inline-block; box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3); transition: transform 0.2s;">
+                    📸 <span class="lang-en">Select Leaf Image</span><span class="lang-hi" style="display:none;">पत्ती की छवि चुनें</span>
+                </label>
+
+                <!-- Loading Spinner -->
+                <div id="disease-loading" style="display: none; margin-top: 1.5rem;">
+                    <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--accent-blue); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+                    <p style="color: #666; font-size: 0.95rem;">
+                        <span class="lang-en">🔬 Analyzing image with AI...</span>
+                        <span class="lang-hi" style="display:none;">🔬 AI से छवि का विश्लेषण हो रहा है...</span>
+                    </p>
+                </div>
+
+                <div id="disease-upload-preview" style="margin-top: 1.5rem; display: none;">
+                    <img id="leaf-preview" src="" alt="Uploaded Leaf"
+                        style="max-width: 100%; max-height: 250px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); margin-bottom: 1.5rem; border: 3px solid #e2e8f0;">
+
+                    <!-- ===== RICH RESULT BOX ===== -->
+                    <div id="disease-result-box" style="display: none; text-align: left;">
+
+                        <!-- Header: Disease Name + Confidence Badge -->
+                        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); padding: 1.2rem 1.5rem; border-radius: 12px; border-left: 5px solid #10b981; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <div>
+                                <h3 style="color: #0f172a; margin: 0 0 0.3rem 0; font-size: 1.25rem;">
+                                    <span class="lang-en">🔬 Diagnosis</span>
+                                    <span class="lang-hi" style="display:none;">🔬 निदान</span>
+                                </h3>
+                                <span id="detected-disease-name" style="color: #dc2626; font-size: 1.3rem; font-weight: 700;"></span>
+                                <span id="detected-disease-name-hi" style="display: none; color: #dc2626; font-size: 1.1rem; font-weight: 600; margin-left: 0.5rem;"></span>
+                            </div>
+                            <div id="confidence-badge" style="background: #10b981; color: white; padding: 8px 18px; border-radius: 25px; font-weight: 700; font-size: 1.1rem; box-shadow: 0 2px 8px rgba(16,185,129,0.3); white-space: nowrap;">
+                                <span class="lang-en">Confidence:</span>
+                                <span class="lang-hi" style="display:none;">विश्वास:</span>
+                                <span id="confidence-value">0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Severity Badge -->
+                        <div id="severity-section" style="margin-bottom: 1rem; display: none;">
+                            <span style="font-weight: 600; color: #334155; margin-right: 0.5rem;">
+                                <span class="lang-en">⚡ Severity:</span>
+                                <span class="lang-hi" style="display:none;">⚡ गंभीरता:</span>
+                            </span>
+                            <span id="severity-badge" style="padding: 4px 14px; border-radius: 20px; font-weight: 600; font-size: 0.85rem;"></span>
+                        </div>
+
+                        <!-- Description -->
+                        <div id="description-section" style="background: #f8fafc; padding: 1rem 1.2rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid #e2e8f0; display: none;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #1e293b; font-size: 1rem;">
+                                <span class="lang-en">📋 Description</span>
+                                <span class="lang-hi" style="display:none;">📋 विवरण</span>
+                            </h4>
+                            <p id="disease-description-en" style="color: #475569; font-size: 0.92rem; line-height: 1.6; margin: 0;"></p>
+                            <p id="disease-description-hi" style="color: #64748b; font-size: 0.88rem; line-height: 1.6; margin: 0.5rem 0 0 0; font-style: italic; display: none;"></p>
+                        </div>
+
+                        <!-- Treatment Methods - Biological -->
+                        <div id="treatment-bio-section" style="background: #f0fdf4; padding: 1rem 1.2rem; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #bbf7d0; display: none;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #166534; font-size: 0.95rem;">
+                                <span class="lang-en">🌿 Biological Treatment</span>
+                                <span class="lang-hi" style="display:none;">🌿 जैविक उपचार</span>
+                            </h4>
+                            <ul id="treatment-bio-list" style="margin: 0; padding-left: 1.2rem; color: #15803d; font-size: 0.9rem; line-height: 1.7;"></ul>
+                        </div>
+
+                        <!-- Treatment Methods - Chemical -->
+                        <div id="treatment-chem-section" style="background: #fef3c7; padding: 1rem 1.2rem; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #fde68a; display: none;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #92400e; font-size: 0.95rem;">
+                                <span class="lang-en">🧪 Chemical Treatment</span>
+                                <span class="lang-hi" style="display:none;">🧪 रासायनिक उपचार</span>
+                            </h4>
+                            <ul id="treatment-chem-list" style="margin: 0; padding-left: 1.2rem; color: #a16207; font-size: 0.9rem; line-height: 1.7;"></ul>
+                        </div>
+
+                        <!-- Treatment Methods - Prevention -->
+                        <div id="treatment-prev-section" style="background: #eff6ff; padding: 1rem 1.2rem; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #bfdbfe; display: none;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #1e40af; font-size: 0.95rem;">
+                                <span class="lang-en">🛡️ Prevention</span>
+                                <span class="lang-hi" style="display:none;">🛡️ रोकथाम</span>
+                            </h4>
+                            <ul id="treatment-prev-list" style="margin: 0; padding-left: 1.2rem; color: #1d4ed8; font-size: 0.9rem; line-height: 1.7;"></ul>
+                        </div>
+
+                        <!-- Fallback combined treatment (if no categorized treatments) -->
+                        <div id="treatment-combined-section" style="background: #f8fafc; padding: 1rem 1.2rem; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #e2e8f0; display: none;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #1e293b; font-size: 0.95rem;">
+                                <span class="lang-en">💊 Treatment</span>
+                                <span class="lang-hi" style="display:none;">💊 उपचार</span>
+                            </h4>
+                            <p id="treatment-combined-text" style="color: #475569; font-size: 0.9rem; line-height: 1.6; margin: 0;"></p>
+                        </div>
+
+                        <!-- Similar Images -->
+                        <div id="similar-images-section" style="margin-bottom: 1rem; display: none;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #1e293b; font-size: 0.95rem;">
+                                <span class="lang-en">🖼️ Similar Disease Images</span>
+                                <span class="lang-hi" style="display:none;">🖼️ समान रोग की छवियाँ</span>
+                            </h4>
+                            <div id="similar-images-grid" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+                        </div>
+
+                        <!-- Alternative Suggestions -->
+                        <div id="alternatives-section" style="background: #faf5ff; padding: 1rem 1.2rem; border-radius: 10px; border: 1px solid #e9d5ff; margin-bottom: 0.8rem; display: none;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #6b21a8; font-size: 0.95rem;">
+                                <span class="lang-en">🔄 Other Possible Diseases</span>
+                                <span class="lang-hi" style="display:none;">🔄 अन्य संभावित बीमारियाँ</span>
+                            </h4>
+                            <div id="alternatives-list"></div>
+                        </div>
+
+                        <!-- External Link -->
+                        <div id="external-link-section" style="text-align: center; margin-top: 1rem; display: none;">
+                            <a id="external-link" href="#" target="_blank"
+                                style="color: var(--accent-blue); font-weight: 600; font-size: 0.9rem; text-decoration: none; border: 1px solid var(--accent-blue); padding: 8px 20px; border-radius: 20px; transition: 0.2s;">
+                                <span class="lang-en">📖 Learn More About This Disease</span>
+                                <span class="lang-hi" style="display:none;">📖 इस बीमारी के बारे में और जानें</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ===== ERROR BOX ===== -->
+                    <div id="disease-error-box"
+                        style="display: none; background: #fee2e2; padding: 1.5rem; border-radius: 12px; border-left: 5px solid #ef4444; text-align: left;">
+                        <h3 style="color: #991b1b; margin-bottom: 0.5rem; font-size: 1.2rem;">
+                            <span class="lang-en">⚠️ Detection Failed</span>
+                            <span class="lang-hi" style="display:none;">⚠️ पहचान विफल</span>
+                        </h3>
+                        <p id="disease-error-message" style="color: #b91c1c; font-size: 0.95rem; line-height: 1.5;"></p>
+                        <p id="disease-error-message-hi" style="color: #dc2626; font-size: 0.9rem; line-height: 1.5; font-style: italic; display: none;"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8️⃣ DISEASE GUIDE -->
+        <section id="disease" class="page">
+            <h1 style="color: rgb(21, 128, 61);">🏥 Crop Disease Guide</h1>
+            <p class="bilingual">"Faslon ki bimariyan pehchane aur unka ilaaj karein / Identify and treat crop diseases"
+            </p>
+
+            <div
+                style="background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+                <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text-dark);">Total Diseases Diagnosed
+                    by Crop</h3>
+                <canvas id="diseasePageChart" style="max-height: 300px;"></canvas>
+            </div>
+
+            <div id="disease-container"></div>
+        </section>
+
+        <!-- 9️⃣ RESOURCES -->
+        <section id="resources" class="page">
+            <h1 style="color: rgb(21, 128, 61);">📋 Farmer Resources</h1>
+            <p class="bilingual">"Sarkari yojana aur phone numbers / Govt Schemes & Helplines"</p>
+            <div id="resources-container" class="resource-list"></div>
+
+            <div style="margin-top: 4rem; padding-top: 3rem; border-top: 3px solid #eef2f6;">
+                <h2 style="color: rgb(21, 128, 61); text-align: center;">🔬 Research & Data Sources</h2>
+                <p
+                    style="text-align: center; color: #555; max-width: 800px; margin: 0 auto; line-height: 1.6; font-size: 1.1rem;">
+                    The following trusted research platforms and datasets were used to validate agricultural
+                    information, compile accurate crop statistics, and ensure the credibility of the system for judges
+                    and end-users.
+                </p>
+
+                <div class="trusted-resources-grid">
+                    <a href="https://icar.org.in/" target="_blank" class="trusted-resource-card">
+                        <div class="r-icon">🌾</div>
+                        <h3>ICAR (Indian Council of Agricultural Research)</h3>
+                        <p>Provides validated Indian farming techniques, soil requirements, and certified crop data.</p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+
+                    <a href="https://www.fao.org/faostat/en/" target="_blank" class="trusted-resource-card">
+                        <div class="r-icon">🌍</div>
+                        <h3>FAO (Food and Agriculture Organization)</h3>
+                        <p>Global agricultural statistics used for validating regional crop production constraints.</p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+
+                    <a href="https://earthdata.nasa.gov/" target="_blank" class="trusted-resource-card">
+                        <div class="r-icon">🛰️</div>
+                        <h3>NASA Earth Data</h3>
+                        <p>Applied for advanced climatic, geospatial, and long-term weather trend verifications.</p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+
+                    <a href="https://data.worldbank.org/indicator/AG.LND.AGRI.ZS" target="_blank"
+                        class="trusted-resource-card">
+                        <div class="r-icon">📊</div>
+                        <h3>World Bank Agriculture Data</h3>
+                        <p>Underlying datasets for regional land capacity and agricultural economic indicators.</p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+
+                    <a href="https://www.mdpi.com/journal/agronomy" target="_blank" class="trusted-resource-card">
+                        <div class="r-icon">📖</div>
+                        <h3>MDPI Agronomy Journal</h3>
+                        <p>Open-access research papers on plant diseases, symptoms, and modern treatments.</p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+
+                    <a href="https://scholar.google.com/" target="_blank" class="trusted-resource-card">
+                        <div class="r-icon">🎓</div>
+                        <h3>Google Scholar</h3>
+                        <p>Used to cross-reference academic publications related to livestock yield and Smart Ag
+                            integration.</p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+
+                    <a href="https://ieeexplore.ieee.org/" target="_blank" class="trusted-resource-card">
+                        <div class="r-icon">💻</div>
+                        <h3>IEEE Xplore</h3>
+                        <p>Technical papers on IoT sensor application, precision agriculture, and AI crop modeling.</p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+
+                    <a href="https://www.kaggle.com/datasets" target="_blank" class="trusted-resource-card">
+                        <div class="r-icon">🧠</div>
+                        <h3>Kaggle Datasets</h3>
+                        <p>Used for training initial Machine Learning models for disease detection and soil
+                            intelligence.</p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+
+                    <a href="https://www.sciencedirect.com/" target="_blank" class="trusted-resource-card">
+                        <div class="r-icon">🔬</div>
+                        <h3>ScienceDirect</h3>
+                        <p>Provided core empirical studies on moisture requirements and veterinary preventive measures.
+                        </p>
+                        <span class="r-link">Visit Source ↗</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🔟 AUTHENTICATION (Login / Register) -->
+        <section id="auth" class="page">
+            <div
+                style="max-width: 400px; margin: 0 auto; background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 5px solid var(--primary-color);">
+
+                <div id="login-form-container">
+                    <h2 style="text-align: center; border: none; margin-bottom: 0.5rem;">Welcome Back 👋</h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 1.5rem;">Login to securely access your
+                        farm data</p>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">📱 Mobile Number</label>
+                        <input type="text" id="login-mobile" placeholder="Enter mobile number"
+                            style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">🔒 Password</label>
+                        <input type="password" id="login-password" placeholder="Enter password"
+                            style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;">
+                    </div>
+
+                    <button onclick="app.login()"
+                        style="width: 100%; padding: 0.8rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 1rem;">Login</button>
+                    <p style="text-align: center; font-size: 0.9rem;">Don't have an account? <a href="#"
+                            onclick="document.getElementById('login-form-container').style.display='none'; document.getElementById('register-form-container').style.display='block'; return false;"
+                            style="color: var(--accent-blue);">Register here</a></p>
+                </div>
+
+                <div id="register-form-container" style="display: none;">
+                    <h2 style="text-align: center; border: none; margin-bottom: 0.5rem;">Create Account 🌱</h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 1.5rem;">Join AgriFuse for personalized
+                        insights</p>
+
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">👤 Full Name</label>
+                        <input type="text" id="reg-name" placeholder="Enter your full name"
+                            style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">📱 Mobile Number</label>
+                        <input type="text" id="reg-mobile" placeholder="Enter mobile number"
+                            style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">📍
+                            Village/Location</label>
+                        <input type="text" id="reg-location" placeholder="Enter your village or city"
+                            style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">🔒 Password</label>
+                        <input type="password" id="reg-password" placeholder="Create a strong password"
+                            style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px;">
+                    </div>
+
+                    <button onclick="app.register()"
+                        style="width: 100%; padding: 0.8rem; background: var(--accent-blue); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 1rem;">Register
+                        Now</button>
+                    <p style="text-align: center; font-size: 0.9rem;">Already have an account? <a href="#"
+                            onclick="document.getElementById('register-form-container').style.display='none'; document.getElementById('login-form-container').style.display='block'; return false;"
+                            style="color: var(--primary-color);">Login here</a></p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script>
+        // =====================================================
+        // MOCK BACKEND DATA (Simulating Database/JSON)
+        // =====================================================
+        const MOCK_DB = {
+            // --- Breeds Data ---
+            breeds: [
+                { id: 1, type: 'cow', name: 'Gir', desc: 'High-Quality A2 Milk / Doodh dene wali gaay', img: 'https://girorganic.com/cdn/shop/articles/what-is-gir-cow-453725.jpg?v=1673547600' },
+                { id: 2, type: 'cow', name: 'Sahiwal', desc: 'Best dairy breed / Sabse acchi doodh wali', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDRbgpHoaSm_K4oNzXuwUdton1d5Naoo6Jdw&s' },
+                { id: 3, type: 'cow', name: 'Red Sindhi', desc: 'Heat tolerant / Garmi se bachne wali', img: 'https://raghunandansureshgaushala.com/wp-content/uploads/2021/11/red-sindhi-1.jpg' },
+                { id: 4, type: 'buffalo', name: 'Murrah', desc: 'High fat milk / Gehua doodh', img: 'https://5.imimg.com/data5/SELLER/Default/2024/1/381585135/DZ/GX/EJ/211034892/high-quality-murrah-buffalo-500x500.png' },
+                { id: 5, type: 'buffalo', name: 'Jaffrabadi', desc: 'Heavy body, good yield / Wazoodar bhains', img: 'https://www.dairyknowledge.in/dkp/sites/default/files/styles/large/public/jaffrabadi_buffalo_bull.jpg?itok=JEVJ0-hP' },
+                { id: 6, type: 'goat', name: 'Jamunapari', desc: 'Large body / Badi akar ki bakri', img: 'https://animalsss.com/media/Blog/WhatsApp_Image_2021-10-08_at_9.49.49_AM.jpeg' },
+                { id: 7, type: 'goat', name: 'Beetal', desc: 'Good milker / Accha doodh dene wali', img: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Beetal_Goat_Faisalabad_Panjab_Pakistan.jpg' },
+                { id: 8, type: 'goat', name: 'Sirohi', desc: 'Disease resistant / Bimari se mukt', img: 'https://5.imimg.com/data5/ANDROID/GlPhoto/2024/12/471064592/WF/XG/SQ/234715039/myprofile-jpeg.jpg' },
+            ],
+
+            // --- Veterinary Doctors ---
+            vetDoctors: [
+                { id: 1, name: 'Dr. Rajesh Sharma', hospital: 'Bhopal Veterinary Hospital', location: 'Main Market Road, Bhopal', distance: '2.5 km', contact: '9876543210', timing: '9 AM - 6 PM' },
+                { id: 2, name: 'Dr. Sunita Verma', hospital: 'Pashu Chikitsalaya', location: 'Station Road, Vidisha', distance: '5.0 km', contact: '9876543211', timing: '10 AM - 8 PM' },
+                { id: 3, name: 'Dr. Mohan Patel', hospital: 'Krishi Vigyan Kendra Vet', location: 'Agriculture Campus, Raisen', distance: '8.2 km', contact: '9876543212', timing: '8 AM - 5 PM' },
+                { id: 4, name: 'Dr. Anjali Tiwari', hospital: 'Govt. Animal Hospital', location: 'Civil Lines, Sehore', distance: '12.0 km', contact: '9876543213', timing: '24 Hours Emergency' },
+                { id: 5, name: 'Dr. Ramesh Kumar', hospital: 'Mobile Vet Clinic', location: 'Travels in 10km radius', distance: '3.0 km', contact: '9876543214', timing: 'On Call - 24/7' }
+            ],
+
+            // --- Animal Diseases by Type ---
+            animalDiseases: {
+                cow: [
+                    { name: 'Foot & Mouth Disease (Khur rog)', symptoms: 'Fever, mouth blisters, lameness / Bukhar, muh mein phaphole', prevention: 'Regular vaccination every 6 months / Har 6 mahine mein vaccine', severity: 'high' },
+                    { name: 'Mastitis (Than rog)', symptoms: 'Swollen udder, bloody milk / Soja hua than, khooni doodh', prevention: 'Clean milking, proper hygiene / Safai se doodh nikalein', severity: 'high' },
+                    { name: 'Anthrax (Nasoor)', symptoms: 'High fever, swelling on neck / Tez bukhar, gardan par sozish', prevention: 'Annual vaccination is must / Saal mein ek baar vaccine', severity: 'high' },
+                    { name: 'Black Quarter (Kali tang)', symptoms: 'Swelling in muscles, fever / Maans mein sozish, bukhar', prevention: 'Vaccination before monsoon / Barish se pehle vaccine', severity: 'medium' }
+                ],
+                buffalo: [
+                    { name: 'Foot & Mouth Disease', symptoms: 'Blisters on mouth and feet / Muh aur pair par phaphole', prevention: 'Regular FMD vaccination / Samay par vaccine lagwayein', severity: 'high' },
+                    { name: 'Hemorrhagic Septicemia', symptoms: 'Difficulty breathing, swelling / Saans lene mein dikkat', prevention: 'Vaccination twice a year / Saal mein do baar vaccine', severity: 'high' },
+                    { name: 'Brucellosis', symptoms: 'Abortion in pregnancy / Pregnancy mein girna', prevention: 'Calfhood vaccination / Bachpan mein vaccine', severity: 'medium' },
+                    { name: 'Theileriosis (Tick fever)', symptoms: 'Fever, weakness, pale eyes / Bukhar, kamzori', prevention: 'Tick control, spray regularly / Theek se spray karein', severity: 'medium' }
+                ],
+                goat: [
+                    { name: 'PPR (Peste des Petits Ruminants)', symptoms: 'Fever, mouth lesions, diarrhea / Bukhar, muh mein chhale, dast', prevention: 'PPR vaccine once a year / Saal mein ek baar vaccine', severity: 'high' },
+                    { name: 'Enterotoxemia', symptoms: 'Sudden death, convulsions / Achanak maut, jhatke', prevention: 'Vaccination and avoid overfeeding / Vaccine aur zyada khana na dein', severity: 'high' },
+                    { name: 'Contagious Ecthyma', symptoms: 'Scabs around mouth / Muh ke aas-paas khur-dar pad', prevention: 'Vaccination, isolate infected / Vaccine, bimar ko alag rakhein', severity: 'low' },
+                    { name: 'Colibacillosis', symptoms: 'Diarrhea in kids, dehydration / Bacchon mein dast', prevention: 'Clean water, hygiene / Saaf paani, safai', severity: 'medium' }
+                ]
+            },
+
+            // --- NEW: Crop Intelligence Data ---
+            crops: {
+                wheat: {
+                    name: 'Wheat',
+                    nameHindi: 'गेहूं',
+                    icon: '🌾',
+                    season: 'Rabi',
+                    seasonHindi: 'रबी (सर्दी)',
+                    seasonPeriod: 'October - March',
+                    soil: 'Loamy to Clay Loam',
+                    soilHindi: 'दोमट से मिट्टी वाली मिट्टी',
+                    fertility: 'Medium to High',
+                    fertilityHindi: 'मध्यम से उच्च',
+                    water: '4-6 irrigations',
+                    waterHindi: '4-6 सिंचाई',
+                    waterDetail: 'First irrigation after 21 days, then at tillering, flowering, grain filling stages',
+                    diseases: ['Rust (Patti ka rog)', 'Loose Smut (Kan ka rog)', 'Leaf Blight', 'Termites'],
+                    yield: '3.5 - 5.0 tonnes/hectare',
+                    yieldHindi: '३.५ - ५.० टन प्रति हेक्टेयर'
+                },
+                rice: {
+                    name: 'Rice',
+                    nameHindi: 'धान',
+                    icon: '🍚',
+                    season: 'Kharif',
+                    seasonHindi: 'खरीफ (बारिश)',
+                    seasonPeriod: 'June - November',
+                    soil: 'Clay to Clay Loam',
+                    soilHindi: 'चिकनी मिट्टी',
+                    fertility: 'High',
+                    fertilityHindi: 'उच्च',
+                    water: 'Continuous standing water',
+                    waterHindi: 'लगातार पानी खड़ा',
+                    waterDetail: 'Requires 1000-1500mm rainfall or assured irrigation',
+                    diseases: ['Blast (Dahana rog)', 'Bacterial Leaf Blight', 'Brown Spot', 'Stem Borer'],
+                    yield: '4.0 - 6.0 tonnes/hectare',
+                    yieldHindi: '४.० - ६.० टन प्रति हेक्टेयर'
+                },
+                maize: {
+                    name: 'Maize',
+                    nameHindi: 'मक्का',
+                    icon: '🌽',
+                    season: 'Kharif / Rabi',
+                    seasonHindi: 'खरीफ / रबी',
+                    seasonPeriod: 'June - Oct or Oct - Feb',
+                    soil: 'Well-drained Loamy',
+                    soilHindi: 'अच्छी जल निकासी वाली दोमट',
+                    fertility: 'Medium',
+                    fertilityHindi: 'मध्यम',
+                    water: '5-6 irrigations',
+                    waterHindi: '५-६ सिंचाई',
+                    waterDetail: 'Critical stages: flowering and grain filling',
+                    diseases: ['Downy Mildew', 'Leaf Blight', 'Stalk Rot', 'Fall Armyworm'],
+                    yield: '3.0 - 5.0 tonnes/hectare',
+                    yieldHindi: '३.० - ५.० टन प्रति हेक्टेयर'
+                },
+                cotton: {
+                    name: 'Cotton',
+                    nameHindi: 'कपास',
+                    icon: '☁️',
+                    season: 'Kharif',
+                    seasonHindi: 'खरीफ (बारिश)',
+                    seasonPeriod: 'May - December',
+                    soil: 'Black Cotton Soil',
+                    soilHindi: 'काली मिट्टी (रेगुर)',
+                    fertility: 'Medium',
+                    fertilityHindi: 'मध्यम',
+                    water: '3-4 irrigations',
+                    waterHindi: '३-४ सिंचाई',
+                    waterDetail: 'Sensitive to waterlogging, needs well-drained soil',
+                    diseases: ['Bollworm', 'Whitefly', 'Leaf Curl Virus', 'Pink Bollworm'],
+                    yield: '1.5 - 2.5 tonnes/hectare',
+                    yieldHindi: '१.५ - २.५ टन प्रति हेक्टेयर'
+                },
+                sugarcane: {
+                    name: 'Sugarcane',
+                    nameHindi: 'गन्ना',
+                    icon: '🎋',
+                    season: 'Annual (Year-round)',
+                    seasonHindi: 'साल भर',
+                    seasonPeriod: 'Planting: Feb-Mar or Oct-Nov',
+                    soil: 'Deep Loamy to Clay',
+                    soilHindi: 'गहरी दोमट से मिट्टी',
+                    fertility: 'High',
+                    fertilityHindi: 'उच्च',
+                    water: '8-10 irrigations',
+                    waterHindi: '८-१० सिंचाई',
+                    waterDetail: 'Heavy water requirement, 1500-2000mm equivalent',
+                    diseases: ['Red Rot (Lal rog)', 'Smut (Kan ka rog)', 'Wilt (Sookha rog)', 'Pyrilla'],
+                    yield: '70 - 100 tonnes/hectare',
+                    yieldHindi: '७० - १०० टन प्रति हेक्टेयर'
+                },
+                mustard: {
+                    name: 'Mustard',
+                    nameHindi: 'सरसों',
+                    icon: '🌼',
+                    season: 'Rabi',
+                    seasonHindi: 'रबी (सर्दी)',
+                    seasonPeriod: 'September - February',
+                    soil: 'Light to Medium Loamy',
+                    soilHindi: 'हल्की से मध्यम दोमट',
+                    fertility: 'Low to Medium',
+                    fertilityHindi: 'कम से मध्यम',
+                    water: '2-3 irrigations',
+                    waterHindi: '२-३ सिंचाई',
+                    waterDetail: 'First at 30 days, then at flowering and pod formation',
+                    diseases: ['White Rust', 'Alternaria Blight', 'Aphids', 'Sclerotinia Rot'],
+                    yield: '1.5 - 2.0 tonnes/hectare',
+                    yieldHindi: '१.५ - २.० टन प्रति हेक्टेयर'
+                },
+                chickpea: {
+                    name: 'Chickpea',
+                    nameHindi: 'चना',
+                    icon: '🫘',
+                    season: 'Rabi',
+                    seasonHindi: 'रबी (सर्दी)',
+                    seasonPeriod: 'October - March',
+                    soil: 'Sandy Loam to Loamy',
+                    soilHindi: 'रेतीली दोमट',
+                    fertility: 'Low (fixes own nitrogen)',
+                    fertilityHindi: 'कम (अपना नाइट्रोजन बनाता है)',
+                    water: '1-2 irrigations',
+                    waterHindi: '१-२ सिंचाई',
+                    waterDetail: 'Light irrigation at flowering, avoid waterlogging',
+                    diseases: ['Fusarium Wilt', 'Ascochyta Blight', 'Botrytis Grey Mold', 'Pod Borer'],
+                    yield: '1.5 - 2.5 tonnes/hectare',
+                    yieldHindi: '१.५ - २.५ टन प्रति हेक्टेयर'
+                },
+                potato: {
+                    name: 'Potato',
+                    nameHindi: 'आलू',
+                    icon: '🥔',
+                    season: 'Rabi',
+                    seasonHindi: 'रबी (सर्दी)',
+                    seasonPeriod: 'October - January',
+                    soil: 'Sandy Loam to Loamy',
+                    soilHindi: 'रेतीली दोमट',
+                    fertility: 'High',
+                    fertilityHindi: 'उच्च',
+                    water: '6-8 irrigations',
+                    waterHindi: '६-८ सिंचाई',
+                    waterDetail: 'Regular irrigation, maintain moisture throughout growth',
+                    diseases: ['Late Blight (Akhiri jala)', 'Early Blight', 'Potato Virus', 'Nematodes'],
+                    yield: '20 - 30 tonnes/hectare',
+                    yieldHindi: '२० - ३० टन प्रति हेक्टेयर'
+                }
+            },
+
+            // --- NEW: Government Subsidy Schemes ---
+            subsidySchemes: [
+                {
+                    id: 1,
+                    name: 'PM-KISAN Samman Nidhi',
+                    nameHindi: 'पीएम-किसान सम्मान निधि',
+                    tag: 'Financial',
+                    benefit: '₹6,000 per year in 3 installments / साल में ६,००० रुपये ३ किस्तों में',
+                    description: 'Direct income support to farmer families / किसान परिवारों को सीधे आय सहायता',
+                    eligibility: { landMin: 0, landMax: 100, crops: ['all'], states: ['all'] }
+                },
+                {
+                    id: 2,
+                    name: 'PM Fasal Bima Yojana',
+                    nameHindi: 'पीएम फसल बीमा योजना',
+                    tag: 'Insurance',
+                    benefit: 'Up to 50% premium subsidy / ५०% तक प्रीमियम सब्सिडी',
+                    description: 'Crop insurance against natural calamities / प्राकृतिक आपदाओं से फसल बीमा',
+                    eligibility: { landMin: 0, landMax: 100, crops: ['wheat', 'rice', 'cotton', 'sugarcane', 'mustard', 'vegetables', 'fruits', 'pulses'], states: ['all'] }
+                },
+                {
+                    id: 3,
+                    name: 'Kisan Credit Card (KCC)',
+                    nameHindi: 'किसान क्रेडिट कार्ड',
+                    tag: 'Loan',
+                    benefit: 'Loans up to ₹3 Lakh at 4% interest / ४% ब्याज पर ३ लाख तक ऋण',
+                    description: 'Short-term credit for crop cultivation / फसल खेती के लिए अल्पकालिक ऋण',
+                    eligibility: { landMin: 0.5, landMax: 100, crops: ['all'], states: ['all'] }
+                },
+                {
+                    id: 4,
+                    name: 'Micro Irrigation Scheme (PMKSY)',
+                    nameHindi: 'सूक्ष्म सिंचाई योजना',
+                    tag: 'Irrigation',
+                    benefit: '55-90% subsidy on drip/sprinkler / ड्रिप/स्प्रिंकलर पर ५५-९०% सब्सिडी',
+                    description: 'Subsidy for drip and sprinkler irrigation / ड्रिप और स्प्रिंकलर सिंचाई सब्सिडी',
+                    eligibility: { landMin: 0.5, landMax: 20, crops: ['all'], states: ['all'] }
+                },
+                {
+                    id: 5,
+                    name: 'Agricultural Equipment Subsidy',
+                    nameHindi: 'कृषि उपकरण सब्सिडी',
+                    tag: 'Equipment',
+                    benefit: '25-50% subsidy on tractors, threshers / ट्रैक्टर, थ्रेशर पर २५-५०% सब्सिडी',
+                    description: 'Subsidy on farm machinery and equipment / खेती के उपकरणों पर सब्सिडी',
+                    eligibility: { landMin: 1, landMax: 50, crops: ['all'], states: ['all'] }
+                },
+                {
+                    id: 6,
+                    name: 'Organic Farming Scheme (PKVY)',
+                    nameHindi: 'जैविक खेती योजना',
+                    tag: 'Organic',
+                    benefit: '₹50,000 per hectare for 3 years / ३ साल के लिए हेक्टेयर ₹५०,०००',
+                    description: 'Support for organic farming conversion / जैविक खेती के लिए सहायता',
+                    eligibility: { landMin: 0.5, landMax: 25, crops: ['all'], states: ['all'] }
+                },
+                {
+                    id: 7,
+                    name: 'e-NAM (National Agriculture Market)',
+                    nameHindi: 'ई-नाम (राष्ट्रीय कृषि बाजार)',
+                    tag: 'Market',
+                    benefit: 'Free online trading platform / मुफ्त ऑनलाइन ट्रेडिंग प्लेटफॉर्म',
+                    description: 'Online platform for selling produce at better prices / बेहतर कीमतों पर उपज बेचने के लिए',
+                    eligibility: { landMin: 0, landMax: 100, crops: ['all'], states: ['all'] }
+                },
+                {
+                    id: 8,
+                    name: 'Seed Capital Subsidy Scheme',
+                    nameHindi: 'बीज पूंजी सब्सिडी योजना',
+                    tag: 'Seeds',
+                    benefit: '50% subsidy on certified seeds / प्रमाणित बीज पर ५०% सब्सिडी',
+                    description: 'Subsidy for purchasing certified quality seeds / प्रमाणित गुणवत्ता बीज खरीद के लिए',
+                    eligibility: { landMin: 0.5, landMax: 30, crops: ['wheat', 'rice', 'cotton', 'mustard', 'pulses'], states: ['madhya-pradesh', 'uttar-pradesh', 'rajasthan', 'punjab', 'haryana'] }
+                },
+                {
+                    id: 9,
+                    name: 'Solar Pump Scheme',
+                    nameHindi: 'सौर पंप योजना',
+                    tag: 'Solar',
+                    benefit: '60-90% subsidy on solar pumps / सौर पंप पर ६०-९०% सब्सिडी',
+                    description: 'Solar-powered irrigation pumps subsidy / सौर ऊर्जा से चलने वाले सिंचाई पंप',
+                    eligibility: { landMin: 1, landMax: 25, crops: ['all'], states: ['madhya-pradesh', 'maharashtra', 'rajasthan', 'gujarat', 'karnataka'] }
+                },
+                {
+                    id: 10,
+                    name: 'Dairy Entrepreneurship Scheme',
+                    nameHindi: 'डेयरी उद्यमिता योजना',
+                    tag: 'Dairy',
+                    benefit: '33% subsidy on dairy units / डेयरी यूनिट पर ३३% सब्सिडी',
+                    description: 'Support for setting up dairy farming units / डेयरी फार्मिंग के लिए सहायता',
+                    eligibility: { landMin: 0, landMax: 100, crops: ['all'], states: ['all'] }
+                }
+            ],
+
+
+
+            // --- Crop Diseases Data ---
+            diseases: [
+                { name: 'Leaf Blight (Pattiya Sookhna)', crop: 'Wheat (Gehu)', symptoms: 'Brown spots on leaves / Pattiyon par bhaine dag', solution: 'Use Fungicides / Fungicides ka prayog karein' },
+                { name: 'Powdery Mildew (Faffa)', crop: 'Grapes (Angoor)', symptoms: 'White powdery growth / Safed bhayankar padarth', solution: 'Sulphur dusting / Safed chuna powder chadhai' }
+            ],
+
+            // --- Resources Data ---
+            schemes: [
+                { title: 'Pradhan Mantri Kisan Samman Nidhi', detail: '₹6000 per year income support', tag: 'Financial' },
+                { title: 'Kisan Credit Card (KCC)', detail: 'Low interest loans for farmers', tag: 'Loan' },
+                { title: 'PM Fasal Bima Yojana', detail: 'Crop insurance scheme', tag: 'Insurance' },
+                { title: 'Helpline: 1800-180-1551', detail: 'Kisan Call Center', tag: 'Contact' }
+            ],
+
+            // --- Hardware State ---
+            hardwareState: { pump: false, fan: false }
+        };
+
+        // =====================================================
+        // MOCK BACKEND API CLASS
+        // =====================================================
+        class BackendService {
+            static async getSensorData() {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve({
+                            temp: (Math.random() * (35 - 20) + 20).toFixed(1),
+                            humidity: Math.floor(Math.random() * (80 - 40) + 40),
+                            moisture: Math.floor(Math.random() * (90 - 30) + 30)
+                        });
+                    }, 500);
+                });
+            }
+
+            static async getBreeds(filterType) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        if (filterType === 'all') resolve(MOCK_DB.breeds);
+                        else resolve(MOCK_DB.breeds.filter(b => b.type === filterType));
+                    }, 300);
+                });
+            }
+
+            static async getChatbotResponse(message) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        const msg = message.toLowerCase();
+                        let response = "Main samajh nahi paya. Kripya dobara poochein. / I didn't understand. Please ask again.";
+
+                        if (msg.includes('hello') || msg.includes('namaste') || msg.includes('hi')) {
+                            response = "Namaste! 🙏 Main aapki kaise madad kar sakta hoon? Kheti, fasal, ya sarkari yojana ke baare mein poochein.\n\nHello! How can I help you? Ask about farming, crops, or government schemes.";
+                        } else if (msg.includes('weather') || msg.includes('mausam')) {
+                            response = "Aaj mausam saaf hai, taapmaan 28-32°C ke aas-paas rahega.\n\nWeather is clear today, temperature around 28-32°C.";
+                        } else if (msg.includes('crop') || msg.includes('fasal') || msg.includes('wheat') || msg.includes('rice')) {
+                            response = "Wheat ki fasal Rabi season mein booni jaati hai (Oct-Mar). 4-6 sinchai ki zaroorat hoti hai.\n\nWheat is sown in Rabi season (Oct-Mar). Requires 4-6 irrigations. Check 'Crop Intel' section for more details.";
+                        } else if (msg.includes('scheme') || msg.includes('yojana') || msg.includes('subsidy')) {
+                            response = "PM-KISAN yojana ke tah aapko ₹6000 milte hain. 'Subsidy Checker' mein jaake apni eligibility check karein.\n\nPM-KISAN provides ₹6000 annually. Check your eligibility in 'Subsidy Checker' section.";
+                        } else if (msg.includes('disease') || msg.includes('bimari')) {
+                            response = "Fasal ki bimari ke liye 'Crop Disease Guide' check karein. Pashu ki bimari ke liye Breedify section dekhein.\n\nFor crop diseases, check 'Crop Disease Guide'. For animal diseases, visit Breedify section.";
+                        } else if (msg.includes('vet') || msg.includes('doctor') || msg.includes('pashu chikitsak')) {
+                            response = "Breedify section mein 'Veterinary Doctors' part dekhein. Wahan paas ke doctors ki list hai with contact numbers.\n\nCheck 'Veterinary Doctors' in Breedify section for nearby doctors with contact details.";
+                        } else if (msg.includes('soil') || msg.includes('mitti')) {
+                            response = "Mitti ki jaanch ke liye Soil Health Card yojana hai. 'Crop Intel' section mein fasal ke hisaab se mitti ki jaankari milegi.\n\nSoil Health Card scheme is available for soil testing. Check 'Crop Intel' for soil requirements per crop.";
+                        } else if (msg.includes('loan') || msg.includes('karz') || msg.includes('rishhta')) {
+                            response = "Kisan Credit Card (KCC) se 4% interest par ₹3 lakh tak loan milta hai. Apne bank mein apply karein.\n\nKisan Credit Card offers up to ₹3 lakh at 4% interest. Apply at your bank.";
+                        }
+
+                        resolve(response);
+                    }, 1000);
+                });
+            }
+        }
+
+        // =====================================================
+        // FRONTEND APP LOGIC
+        // =====================================================
+        class App {
+            constructor() {
+                this.currentUser = null;
+                this.currentRoute = 'dashboard';
+                this.weatherSimulation = null;
+                this.sensorSimulation = null;
+                this.currentLang = 'en';
+                this.token = localStorage.getItem('agrifuse_token');
+                this.init();
+            }
+
+            toggleMobileMenu() {
+                const nav = document.getElementById('main-nav');
+                nav.classList.toggle('nav-open');
+                const hamburger = document.getElementById('hamburger-menu');
+                hamburger.classList.toggle('open');
+            }
+
+            toggleLanguage() {
+                this.currentLang = this.currentLang === 'en' ? 'hi' : 'en';
+                const isHi = this.currentLang === 'hi';
+
+                document.querySelectorAll('.lang-en').forEach(el => el.style.display = isHi ? 'none' : '');
+                document.querySelectorAll('.lang-hi').forEach(el => el.style.display = isHi ? '' : 'none');
+
+                // Toggle text with / character
+                document.querySelectorAll('h2, h3, h4, p:not(.lang-en):not(.lang-hi), button, span').forEach(el => {
+                    if (el.children.length === 0 && el.innerText.includes('/')) {
+                        if (!el.dataset.original) el.dataset.original = el.innerText;
+                        const parts = el.dataset.original.split(' / ');
+                        if (parts.length > 1) {
+                            el.innerText = isHi ? parts[1].trim() : parts[0].trim();
+                        }
+                    } else if (el.dataset.original) {
+                        const parts = el.dataset.original.split(' / ');
+                        if (parts.length > 1) {
+                            el.innerText = isHi ? parts[1].trim() : parts[0].trim();
+                        }
+                    }
+                });
+            }
+
+            scrollToWeather() {
+                this.router('dashboard');
+                setTimeout(() => {
+                    const weatherHero = document.getElementById('weather-hero');
+                    if (weatherHero) weatherHero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+
+            async checkAuth() {
+                if (this.token) {
+                    try {
+                        const res = await fetch('/api/auth/me', {
+                            headers: { 'Authorization': `Bearer ${this.token}` }
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            this.currentUser = data.user;
+                            document.getElementById('nav-login').style.display = 'none';
+                            document.getElementById('nav-logout').style.display = 'block';
+
+                            // Auto-set weather search to user location
+                            if (this.currentUser.location) {
+                                document.getElementById('weather-search').value = this.currentUser.location;
+                                this.fetchWeather();
+                            }
+                            this.showToast('Welcome back, ' + this.currentUser.full_name);
+                            document.getElementById('analytics-section').style.display = 'block';
+                            this.loadCharts();
+                        } else {
+                            this.logout();
+                        }
+                    } catch (e) {
+                        console.error('Auth Check Failed', e);
+                    }
+                }
+            }
+
+            async login() {
+                const mobile = document.getElementById('login-mobile').value;
+                const password = document.getElementById('login-password').value;
+                if (!mobile || !password) return this.showToast('Please enter mobile and password');
+
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mobile_number: mobile, password: password })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        this.token = data.token;
+                        localStorage.setItem('agrifuse_token', this.token);
+                        this.currentUser = data.user;
+                        this.showToast('Login Successful!');
+
+                        document.getElementById('nav-login').style.display = 'none';
+                        document.getElementById('nav-logout').style.display = 'block';
+
+                        // Set weather to user loc
+                        document.getElementById('weather-search').value = this.currentUser.location;
+                        this.fetchWeather();
+
+                        // Default to dashboard after logic
+                        this.router('dashboard');
+
+                        document.getElementById('analytics-section').style.display = 'block';
+                        this.loadCharts();
+                    } else {
+                        this.showToast(data.message);
+                    }
+                } catch (e) {
+                    this.showToast('Login request failed');
+                }
+            }
+
+            async register() {
+                const name = document.getElementById('reg-name').value;
+                const mobile = document.getElementById('reg-mobile').value;
+                const location = document.getElementById('reg-location').value;
+                const password = document.getElementById('reg-password').value;
+
+                if (!name || !mobile || !location || !password) return this.showToast('All fields required');
+
+                try {
+                    const res = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ full_name: name, mobile_number: mobile, location: location, password: password })
+                    });
+                    const data = await res.json();
+                    this.showToast(data.message);
+                    if (data.success) {
+                        document.getElementById('register-form-container').style.display = 'none';
+                        document.getElementById('login-form-container').style.display = 'block';
+                        document.getElementById('login-mobile').value = mobile;
+                    }
+                } catch (e) {
+                    this.showToast('Registration request failed');
+                }
+            }
+
+            logout() {
+                this.currentUser = null;
+                this.token = null;
+                localStorage.removeItem('agrifuse_token');
+                document.getElementById('nav-login').style.display = 'block';
+                document.getElementById('nav-logout').style.display = 'none';
+                this.showToast('Logged out successfully');
+                this.router('auth');
+            }
+
+            async loadCharts() {
+                try {
+                    // Fetch monitoring data
+                    const monRes = await fetch('/api/dashboard/monitoring');
+                    const monData = await monRes.json();
+
+                    if (monData.success) {
+                        const labels = monData.data.labels;
+
+                        // Weather Trends
+                        new Chart(document.getElementById('weatherTrendsChart').getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Temperature (°C)',
+                                    data: monData.data.temperatures,
+                                    borderColor: '#ff9800',
+                                    tension: 0.1
+                                }, {
+                                    label: 'Humidity (%)',
+                                    data: monData.data.humidities,
+                                    borderColor: '#2196F3',
+                                    tension: 0.1
+                                }]
+                            },
+                        });
+
+
+                    }
+
+                    // Fetch Breed Data
+                    const breedRes = await fetch('/api/dashboard/breeds');
+                    const breedData = await breedRes.json();
+
+                    if (breedData.success) {
+                        new Chart(document.getElementById('breedMilkChart').getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: breedData.data.labels,
+                                datasets: [{
+                                    label: 'Milk Production (Liters)',
+                                    data: breedData.data.milk_production,
+                                    backgroundColor: '#9c27b0'
+                                }]
+                            }
+                        });
+
+                        // Breedify Page replica
+                        new Chart(document.getElementById('breedifyChart').getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: breedData.data.labels,
+                                datasets: [{
+                                    label: 'Milk Production (Liters)',
+                                    data: breedData.data.milk_production,
+                                    backgroundColor: '#9c27b0'
+                                }]
+                            }
+                        });
+                    }
+
+                    // Fetch Disease Stats
+                    const diseaseRes = await fetch('/api/dashboard/diseases');
+                    const diseaseData = await diseaseRes.json();
+
+                    if (diseaseData.success) {
+                        new Chart(document.getElementById('diseaseFreqChart').getContext('2d'), {
+                            type: 'pie',
+                            data: {
+                                labels: diseaseData.data.labels,
+                                datasets: [{
+                                    data: diseaseData.data.counts,
+                                    backgroundColor: ['#ff9800', '#f44336', '#4caf50', '#2196F3', '#9c27b0']
+                                }]
+                            }
+                        });
+
+                        // Disease Page replica
+                        new Chart(document.getElementById('diseasePageChart').getContext('2d'), {
+                            type: 'pie',
+                            data: {
+                                labels: diseaseData.data.labels,
+                                datasets: [{
+                                    data: diseaseData.data.counts,
+                                    backgroundColor: ['#ff9800', '#f44336', '#4caf50', '#2196F3', '#9c27b0']
+                                }]
+                            }
+                        });
+                    }
+
+                    // Static Crop Intel Chart
+                    new Chart(document.getElementById('cropIntelChart').getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Wheat', 'Rice', 'Maize', 'Cotton', 'Sugarcane'],
+                            datasets: [{
+                                label: 'Water Requirement (Liters/Kg yield)',
+                                data: [1500, 3000, 1200, 4000, 2000],
+                                backgroundColor: '#2196F3'
+                            }]
+                        }
+                    });
+
+                    // Static Subsidy Chart
+                    new Chart(document.getElementById('subsidyChart').getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Madhya Pradesh', 'Punjab', 'Uttar Pradesh', 'Haryana', 'Maharashtra'],
+                            datasets: [{
+                                data: [35, 20, 25, 10, 10],
+                                backgroundColor: ['#4caf50', '#ffb300', '#1e88e5', '#8e24aa', '#e53935']
+                            }]
+                        }
+                    });
+
+                } catch (e) {
+                    console.error("Failed to load charts", e);
+                }
+            }
+
+            init() {
+                this.checkAuth();
+                this.renderBreeds();
+                this.renderVetDoctors();
+                this.renderAnimalDiseases();
+                this.renderDiseases();
+                this.renderResources();
+                this.fetchWeather();
+                this.fetchMarketPrices();
+            }
+
+            // --- Navigation Router ---
+            router(pageId) {
+                const protectedRoutes = ['crop-intel', 'breedify', 'subsidy', 'chatbot', 'disease', 'resources', 'plant-ai', 'crop-market', 'carbon-market'];
+                if (protectedRoutes.includes(pageId) && !this.currentUser) {
+                    this.showToast('🔒 Please login to access this feature');
+                    pageId = 'auth';
+                }
+
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                const targetId = pageId === 'home' ? 'dashboard' : pageId;
+                const target = document.getElementById(targetId);
+                if (target) target.classList.add('active');
+
+                document.querySelectorAll('.nav-link').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${pageId}'`)) {
+                        btn.classList.add('active');
+                    }
+                });
+
+                window.scrollTo(0, 0);
+
+                // Close mobile menu if open
+                const navList = document.getElementById('main-nav');
+                if (navList.classList.contains('nav-open')) {
+                    navList.classList.remove('nav-open');
+                    document.getElementById('hamburger-menu').classList.remove('open');
+                }
+
+                // Render listings when entering marketplace pages
+                if (pageId === 'crop-market') {
+                    this.renderCropListings();
+                } else if (pageId === 'carbon-market') {
+                    this.renderCarbonListings();
+                }
+            }
+
+            toggleAnalytics() {
+                const content = document.getElementById('analytics-section');
+                const icon = document.getElementById('analytics-icon');
+                const isExpanded = content.classList.contains('expanded');
+
+                if (isExpanded) {
+                    content.classList.remove('expanded');
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.classList.add('expanded');
+                    icon.style.transform = 'rotate(180deg)';
+                    // Scroll slightly to show content
+                    setTimeout(() => {
+                        content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 300);
+                }
+            }
+
+            toggleMandiPrices() {
+                const content = document.getElementById('market-prices-section');
+                const icon = document.getElementById('mandi-icon');
+                const isExpanded = content.classList.contains('expanded');
+
+                if (isExpanded) {
+                    content.classList.remove('expanded');
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.classList.add('expanded');
+                    icon.style.transform = 'rotate(180deg)';
+                    // Scroll slightly to show content
+                    setTimeout(() => {
+                        content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 300);
+                }
+            }
+
+            // --- Breedify Module ---
+            handleBreedFilterChange() {
+                this.renderBreeds();
+                this.renderAnimalDiseases();
+            }
+
+            async renderBreeds() {
+                const filter = document.getElementById('breed-filter').value;
+                const container = document.getElementById('breed-container');
+                const breeds = await BackendService.getBreeds(filter);
+
+                container.innerHTML = breeds.map(b => `
+                    <div class="breed-card">
+                        <img src="${b.img}" alt="${b.name}" class="breed-img" onerror="this.src='https://via.placeholder.com/250x180?text=${b.name}'">
+                        <div class="breed-info">
+                            <h3>${b.name}</h3>
+                            <p>${b.desc}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderVetDoctors() {
+                const container = document.getElementById('vet-container');
+                const doctors = MOCK_DB.vetDoctors;
+
+                container.innerHTML = doctors.map(doc => `
+                    <div class="vet-card">
+                        <div class="vet-header">
+                            <div class="vet-avatar">👨‍⚕️</div>
+                            <div class="vet-title">
+                                <h3>${doc.name}</h3>
+                                <span class="vet-hospital">🏥 ${doc.hospital}</span>
+                            </div>
+                        </div>
+                        <div class="vet-details">
+                            <div class="vet-info-row">
+                                <span class="vet-label">📍 Location:</span>
+                                <span>${doc.location}</span>
+                            </div>
+                            <div class="vet-info-row">
+                                <span class="vet-label">📏 Distance:</span>
+                                <span class="vet-distance">${doc.distance}</span>
+                            </div>
+                            <div class="vet-info-row">
+                                <span class="vet-label">📞 Contact:</span>
+                                <a href="tel:${doc.contact}" class="vet-contact">${doc.contact}</a>
+                            </div>
+                            <div class="vet-info-row">
+                                <span class="vet-label">🕐 Timing:</span>
+                                <span>${doc.timing}</span>
+                            </div>
+                        </div>
+                        <div class="vet-actions">
+                            <a href="tel:${doc.contact}" class="vet-btn call-btn">📞 Call</a>
+                            <button class="vet-btn direction-btn" onclick="app.showToast('Opening Maps...')">🗺️ Directions</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderAnimalDiseases() {
+                const filter = document.getElementById('breed-filter').value;
+                const container = document.getElementById('animal-disease-container');
+                const titleEl = document.getElementById('disease-section-title');
+                const descEl = document.getElementById('disease-section-desc');
+
+                if (filter === 'all') {
+                    titleEl.textContent = '🦠 Common Diseases (All Animals)';
+                    descEl.textContent = '"Sabhi pashuon ki bimariyan / Diseases for all animals"';
+                } else {
+                    const animalName = { cow: 'Cow/Gaay', buffalo: 'Buffalo/Bhains', goat: 'Goat/Bakri' };
+                    titleEl.textContent = `🦠 Diseases for ${animalName[filter]}`;
+                    descEl.textContent = `"${animalName[filter]} ki bimariyan"`;
+                }
+
+                let diseases = [];
+                if (filter === 'all') {
+                    diseases = [
+                        ...MOCK_DB.animalDiseases.cow.slice(0, 2),
+                        ...MOCK_DB.animalDiseases.buffalo.slice(0, 2),
+                        ...MOCK_DB.animalDiseases.goat.slice(0, 2)
+                    ];
+                } else {
+                    diseases = MOCK_DB.animalDiseases[filter] || [];
+                }
+
+                container.innerHTML = diseases.map(d => `
+                    <div class="animal-disease-card severity-${d.severity}">
+                        <div class="disease-header">
+                            <h3>⚠️ ${d.name}</h3>
+                            <span class="severity-badge severity-${d.severity}">
+                                ${d.severity === 'high' ? '⚠️ High Risk' : d.severity === 'medium' ? '⚡ Medium' : '✅ Low'}
+                            </span>
+                        </div>
+                        <div class="disease-body">
+                            <div class="disease-row">
+                                <strong>🩺 Symptoms:</strong>
+                                <p>${d.symptoms}</p>
+                            </div>
+                            <div class="disease-row prevention">
+                                <strong>🛡️ Prevention:</strong>
+                                <p>${d.prevention}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // --- NEW: Crop Intelligence Module ---
+            renderCropDetails() {
+                const cropKey = document.getElementById('crop-selector').value;
+                const container = document.getElementById('crop-details-container');
+
+                if (!cropKey) {
+                    container.innerHTML = `
+                        <div class="crop-details-card" style="padding: 2rem; text-align: center; color: #666;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+                            <p>Please select a crop from the dropdown above</p>
+                            <p class="bilingual">"Upar se fasal chunein / Select crop above"</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const crop = MOCK_DB.crops[cropKey];
+                if (!crop) return;
+
+                container.innerHTML = `
+                    <div class="crop-details-card">
+                        <div class="crop-header">
+                            <h3>${crop.icon} ${crop.name} (${crop.nameHindi})</h3>
+                            <span class="season-badge">📅 ${crop.season} Season</span>
+                        </div>
+                        <div class="crop-body">
+                            <div class="crop-info-grid">
+                                <div class="crop-info-item">
+                                    <div class="label">📅 Season / Mausam</div>
+
+                                    <div class="value">${crop.season} (${crop.seasonHindi})</div>
+                                </div>
+                                <div class="crop-info-item">
+                                    <div class="label">📆 Period / Avadhi</div>
+                                    <div class="value">${crop.seasonPeriod}</div>
+                                </div>
+                                <div class="crop-info-item">
+                                    <div class="label">🏞️ Soil Type / Mitti</div>
+                                    <div class="value">${crop.soil}<br><small>${crop.soilHindi}</small></div>
+                                </div>
+                                <div class="crop-info-item">
+                                    <div class="label">🧪 Fertility Level / Urvrata</div>
+                                    <div class="value">${crop.fertility}<br><small>${crop.fertilityHindi}</small></div>
+                                </div>
+                                <div class="crop-info-item">
+                                    <div class="label">💧 Water Requirement / Paani</div>
+                                    <div class="value">${crop.water}<br><small>${crop.waterHindi}</small></div>
+                                </div>
+                            </div>
+
+                            <div class="crop-section">
+                                <h4>💧 Irrigation Details / Sinchai Vivaran</h4>
+                                <p style="color: #555;">${crop.waterDetail}</p>
+                            </div>
+
+                            <div class="crop-section">
+                                <h4>🦠 Common Diseases / Samanya Bimariyan</h4>
+                                <div class="disease-chips">
+                                    ${crop.diseases.map(d => `<span class="disease-chip">${d}</span>`).join('')}
+                                </div>
+                            </div>
+
+                            <div class="yield-highlight">
+                                <div class="yield-label">📊 Expected Yield / Aashrita Utpaad</div>
+                                <div class="yield-value">${crop.yield}</div>
+                                <div class="yield-label">${crop.yieldHindi}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // --- NEW: Subsidy Eligibility Checker ---
+            checkSubsidyEligibility() {
+                const state = document.getElementById('subsidy-state').value;
+                const landSize = parseFloat(document.getElementById('subsidy-land').value) || 0;
+                const cropType = document.getElementById('subsidy-crop').value;
+                const container = document.getElementById('subsidy-results-container');
+
+                if (!state || !cropType) {
+                    this.showToast('Please fill all fields / Kripya sab fields bharein');
+                    return;
+                }
+
+                const navList = document.getElementById('main-nav');
+                if (navList.classList.contains('nav-open')) {
+                    navList.classList.remove('nav-open');
+                    document.getElementById('hamburger-menu').classList.remove('open');
+                }
+
+                const eligibleSchemes = MOCK_DB.subsidySchemes.filter(scheme => {
+                    const elig = scheme.eligibility;
+                    const landOk = landSize >= elig.landMin && landSize <= elig.landMax;
+                    const cropOk = elig.crops.includes('all') || elig.crops.includes(cropType);
+                    const stateOk = elig.states.includes('all') || elig.states.includes(state);
+                    return landOk && cropOk && stateOk;
+                });
+
+                if (eligibleSchemes.length === 0) {
+                    container.innerHTML = `<div class="no-schemes"><div style="font-size: 2rem;">😔</div><p>No schemes found matching your criteria</p></div>`;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="eligible-count">
+                        <div class="count">${eligibleSchemes.length}</div>
+                        <div class="yield-label">Eligible Schemes Found / Yogy Yojanaein</div>
+                    </div>
+                    <div class="subsidy-results">
+                        ${eligibleSchemes.map(scheme => `
+                            <div class="scheme-card">
+                                <div class="scheme-header">
+                                    <h4>${scheme.name}</h4>
+                                    <span class="scheme-tag">${scheme.tag}</span>
+                                </div>
+                                <div class="scheme-body">
+                                    <div class="scheme-benefit">💰 <strong>Benefit:</strong> ${scheme.benefit}</div>
+                                    <div class="scheme-benefit">📝 ${scheme.description}</div>
+                                    <div class="scheme-eligibility">✅ You are eligible! / Aap yogy hain!</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                this.showToast(`Found ${eligibleSchemes.length} eligible schemes!`);
+            }
+
+            // --- Chatbot Module ---
+            async sendMessage() {
+                const input = document.getElementById('chat-input');
+                const text = input.value.trim();
+                if (!text) return;
+
+                this.addMessage(text, 'user-msg');
+                input.value = '';
+
+                const response = await BackendService.getChatbotResponse(text);
+                this.addMessage(response, 'bot-msg');
+            }
+
+            addMessage(text, className) {
+                const container = document.getElementById('chat-messages');
+                if (!container) return;
+                const div = document.createElement('div');
+                div.className = `message ${className}`;
+                div.innerText = text;
+                container.appendChild(div);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            renderDiseases() {
+                const container = document.getElementById('disease-container');
+                if (!container) return;
+                container.innerHTML = (MOCK_DB.diseases || []).map(d => `
+                    <div class="disease-card">
+                        <h3>${d.name}</h3>
+                        <div class="disease-tags">
+                            <span>Crop: ${d.crop}</span>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <strong>🩺 Symptoms:</strong> <p>${d.symptoms}</p>
+                        </div>
+                        <div style="margin-top: 5px;">
+                            <strong>⚡ Solution:</strong> <p>${d.solution}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderResources() {
+                const container = document.getElementById('resources-container');
+                if (!container) return;
+                container.innerHTML = (MOCK_DB.schemes || []).map(s => `
+                    <div class="resource-item">
+                        <div>
+                            <strong>${s.title}</strong><br>
+                            <small>${s.detail}</small>
+                        </div>
+                        <span class="tag-scheme">${s.tag}</span>
+                    </div>
+                `).join('');
+            }
+
+            // --- Other Renders ---
+            renderAlerts() {
+                // Method preserved for compatibility but functionality removed
+            }
+
+            async fetchWeather() {
+                const searchInput = document.getElementById('weather-search');
+                const location = searchInput ? searchInput.value || 'Delhi' : 'Delhi';
+                try {
+                    const res = await fetch(`/api/weather?location=${encodeURIComponent(location)}`);
+                    const json = await res.json();
+                    if (json.success) {
+                        const w = json.data;
+                        const locEl = document.getElementById('weather-loc');
+                        const tempEl = document.getElementById('weather-temp');
+                        const condEl = document.getElementById('weather-cond');
+                        const humidEl = document.getElementById('weather-humid');
+                        const windEl = document.getElementById('weather-wind');
+
+                        if (locEl) locEl.innerText = `📍 ${w.location}`;
+                        if (tempEl) tempEl.innerText = ` ${w.temperature}`;
+                        if (condEl) condEl.innerText = w.condition;
+                        if (humidEl) humidEl.innerText = w.humidity;
+                        if (windEl) windEl.innerText = w.windspeed;
+
+                        // Calculate Watering Advice
+                        const temp = parseInt(w.temperature);
+                        const cond = w.condition.toLowerCase();
+                        let adviceEn = "";
+                        let adviceHi = "";
+
+                        if (cond.includes("rain") || cond.includes("barish")) {
+                            adviceEn = "💧 Rain is expected! <strong>No need to water crops today.</strong>";
+                            adviceHi = "💧 बारिश की संभावना है! <strong>आज सिंचाई की जरूरत नहीं है।</strong>";
+                        } else if (temp > 35) {
+                            adviceEn = "🔥 High heat! <strong>Heavy watering needed</strong> (~5-7 L/sqm).";
+                            adviceHi = "🔥 भारी गर्मी! <strong>अधिक सिंचाई की आवश्यकता है</strong> (~5-7 L/sqm)।";
+                        } else {
+                            adviceEn = "☀️ Normal conditions. <strong>Regular watering schedule suggested.</strong>";
+                            adviceHi = "☀️ सामान्य स्थिति। <strong>नियमित सिंचाई करें।</strong>";
+                        }
+
+                        const wateringDiv = document.getElementById('weather-watering');
+                        if (wateringDiv) {
+                            wateringDiv.innerHTML = `<span class="lang-en">${adviceEn}</span><span class="lang-hi" style="display:none;">${adviceHi}</span>`;
+                            if (this.currentLang === 'hi') {
+                                wateringDiv.querySelector('.lang-en').style.display = 'none';
+                                wateringDiv.querySelector('.lang-hi').style.display = 'inline';
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("Weather fetch failed", e);
+                }
+                this.fetchMarketPrices();
+            }
+
+            async fetchMarketPrices() {
+                const searchInput = document.getElementById('weather-search');
+                const location = searchInput ? searchInput.value || 'Delhi' : 'Delhi';
+                const grid = document.getElementById('market-grid');
+                if (!grid) return;
+                const locDisplay = document.getElementById('market-loc-display');
+
+                const cropImages = {
+                    'Wheat (Gehu)': 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=400&q=80',
+                    'Rice (Dhan)': 'https://5.imimg.com/data5/SELLER/Default/2023/7/322826204/BZ/MP/GJ/13537206/sona-masoori-raw-rice.jpg',
+                    'Maize (Makka)': 'https://peptechbio.com/wp-content/uploads/2023/09/wouter-supardi-salari-HE_MjmWh9eQ-unsplash-scaled.jpg',
+                    'Soybean': 'https://ooofarms.com/cdn/shop/files/Soyabean-min_9cbbd7a0-e33c-49a5-8733-3011a2503c34.jpg?v=1752212130&width=3840',
+                    'Cotton (Kapas)': 'https://www.renature.co/wp-content/uploads/2023/07/cotton-1.jpeg',
+                    'Mustard (Sarson)': 'https://gfmdhaka.com/public/images/news/20240129133719-photo-300X370.jpg'
+                };
+
+                try {
+                    const res = await fetch(`/api/market?location=${encodeURIComponent(location)}`);
+                    const json = await res.json();
+
+                    if (json.success && json.data) {
+                        if (locDisplay) locDisplay.innerText = `${location} Mandi`;
+                        grid.innerHTML = json.data.map(item => {
+                            const imgUrl = cropImages[item.crop] || `https://via.placeholder.com/150?text=${item.crop}`;
+                            return `
+                                <div class="market-card">
+                                    <div class="crop-img-container"><img src="${imgUrl}" alt="${item.crop}"></div>
+                                    <div class="card-content">
+                                        <div class="crop-name">${item.crop}</div>
+                                        <div class="market-name">📍 ${item.market}</div>
+                                        <div class="price-row">
+                                            <div class="price-value">${item.price}</div>
+                                            <div class="price-unit">/ ${item.unit}</div>
+                                        </div>
+                                        <div class="footer-row">
+                                            <div class="trend-badge trend-${item.trend}">${item.trend === 'up' ? '↗' : '↘'} ${item.change}</div>
+                                            <div class="update-time">${item.last_updated}</div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        }).join('');
+                    }
+                } catch (e) {
+                    console.error("Market fetch failed", e);
+                }
+            }
+
+            async previewAndUploadImage(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                document.getElementById('disease-upload-preview').style.display = 'block';
+                document.getElementById('leaf-preview').src = URL.createObjectURL(file);
+                document.getElementById('disease-result-box').style.display = 'none';
+                document.getElementById('disease-error-box').style.display = 'none';
+                document.getElementById('disease-loading').style.display = 'block';
+
+                this.showToast('🔬 Uploading and analyzing image...');
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const res = await fetch('/api/ai/predict-disease', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    document.getElementById('disease-loading').style.display = 'none';
+
+                    if (data.success) {
+                        document.getElementById('disease-result-box').style.display = 'block';
+                        document.getElementById('disease-error-box').style.display = 'none';
+
+                        // --- Disease Name ---
+                        document.getElementById('detected-disease-name').innerText = data.disease;
+
+                        // --- Confidence Badge ---
+                        const conf = data.confidence || 0;
+                        document.getElementById('confidence-value').innerText = conf + '%';
+                        const badge = document.getElementById('confidence-badge');
+                        if (conf >= 90) {
+                            badge.style.background = '#059669';
+                        } else if (conf >= 70) {
+                            badge.style.background = '#f59e0b';
+                        } else {
+                            badge.style.background = '#ef4444';
+                        }
+
+                        // --- Severity ---
+                        const severitySection = document.getElementById('severity-section');
+                        const severityBadge = document.getElementById('severity-badge');
+                        if (data.severity && data.severity !== 'Unknown' && data.severity !== 'None') {
+                            severitySection.style.display = 'block';
+                            severityBadge.innerText = data.severity;
+                            const sev = (data.severity || '').toLowerCase();
+                            if (sev === 'high' || sev.includes('high')) {
+                                severityBadge.style.background = '#fee2e2';
+                                severityBadge.style.color = '#dc2626';
+                            } else if (sev === 'medium' || sev.includes('medium')) {
+                                severityBadge.style.background = '#fef3c7';
+                                severityBadge.style.color = '#d97706';
+                            } else {
+                                severityBadge.style.background = '#dbeafe';
+                                severityBadge.style.color = '#2563eb';
+                            }
+                        } else {
+                            severitySection.style.display = 'none';
+                        }
+
+                        // --- Description ---
+                        const descSection = document.getElementById('description-section');
+                        const descEn = document.getElementById('disease-description-en');
+                        const descHi = document.getElementById('disease-description-hi');
+                        if (data.description) {
+                            descSection.style.display = 'block';
+                            descEn.innerText = data.description;
+                            if (data.description_hi) {
+                                descHi.innerText = '(हिंदी) ' + data.description_hi;
+                                descHi.style.display = 'block';
+                            } else {
+                                descHi.style.display = 'none';
+                            }
+                        } else {
+                            descSection.style.display = 'none';
+                        }
+
+                        // --- Treatment Methods ---
+                        const treatments = data.treatments || {};
+                        let hasCategorized = false;
+
+                        // Biological
+                        const bioSection = document.getElementById('treatment-bio-section');
+                        const bioList = document.getElementById('treatment-bio-list');
+                        if (treatments.biological && treatments.biological.length > 0) {
+                            bioSection.style.display = 'block';
+                            bioList.innerHTML = treatments.biological.map(t => `<li>${t}</li>`).join('');
+                            hasCategorized = true;
+                        } else {
+                            bioSection.style.display = 'none';
+                        }
+
+                        // Chemical
+                        const chemSection = document.getElementById('treatment-chem-section');
+                        const chemList = document.getElementById('treatment-chem-list');
+                        if (treatments.chemical && treatments.chemical.length > 0) {
+                            chemSection.style.display = 'block';
+                            chemList.innerHTML = treatments.chemical.map(t => `<li>${t}</li>`).join('');
+                            hasCategorized = true;
+                        } else {
+                            chemSection.style.display = 'none';
+                        }
+
+                        // Prevention
+                        const prevSection = document.getElementById('treatment-prev-section');
+                        const prevList = document.getElementById('treatment-prev-list');
+                        if (treatments.prevention && treatments.prevention.length > 0) {
+                            prevSection.style.display = 'block';
+                            prevList.innerHTML = treatments.prevention.map(t => `<li>${t}</li>`).join('');
+                            hasCategorized = true;
+                        } else {
+                            prevSection.style.display = 'none';
+                        }
+
+                        // Combined fallback
+                        const combSection = document.getElementById('treatment-combined-section');
+                        const combText = document.getElementById('treatment-combined-text');
+                        if (!hasCategorized && data.treatment_combined) {
+                            combSection.style.display = 'block';
+                            combText.innerText = data.treatment_combined;
+                        } else {
+                            combSection.style.display = 'none';
+                        }
+
+                        // --- Similar Images ---
+                        const simSection = document.getElementById('similar-images-section');
+                        const simGrid = document.getElementById('similar-images-grid');
+                        if (data.similar_images && data.similar_images.length > 0) {
+                            simSection.style.display = 'block';
+                            simGrid.innerHTML = data.similar_images.map(url =>
+                                `<img src="${url}" alt="Similar disease" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; box-shadow: 0 2px 6px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">`
+                            ).join('');
+                        } else {
+                            simSection.style.display = 'none';
+                        }
+
+                        // --- Alternative Suggestions ---
+                        const altSection = document.getElementById('alternatives-section');
+                        const altList = document.getElementById('alternatives-list');
+                        if (data.alternatives && data.alternatives.length > 0) {
+                            altSection.style.display = 'block';
+                            altList.innerHTML = data.alternatives.map(alt => {
+                                const altColor = alt.confidence >= 30 ? '#d97706' : '#64748b';
+                                return `<div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f1e8ff;">
+                                    <span style="color: #581c87; font-weight: 500; font-size: 0.9rem;">${alt.name}</span>
+                                    <span style="background: ${altColor}; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 600;">${alt.confidence}%</span>
+                                </div>`;
+                            }).join('');
+                        } else {
+                            altSection.style.display = 'none';
+                        }
+
+                        // --- External Link ---
+                        const extSection = document.getElementById('external-link-section');
+                        const extLink = document.getElementById('external-link');
+                        if (data.external_url) {
+                            extSection.style.display = 'block';
+                            extLink.href = data.external_url;
+                        } else {
+                            extSection.style.display = 'none';
+                        }
+
+                        this.showToast('✅ Diagnosis complete! / निदान पूरा हुआ!');
+                    } else {
+                        document.getElementById('disease-result-box').style.display = 'none';
+                        document.getElementById('disease-error-box').style.display = 'block';
+                        document.getElementById('disease-error-message').innerText = data.message || 'Analysis failed. Please try again.';
+                        const hiMsg = document.getElementById('disease-error-message-hi');
+                        if (data.message_hi) {
+                            hiMsg.innerText = data.message_hi;
+                            hiMsg.style.display = 'block';
+                        } else {
+                            hiMsg.style.display = 'none';
+                        }
+                        this.showToast('⚠️ Detection failed. / पहचान विफल।');
+                    }
+                } catch (e) {
+                    document.getElementById('disease-loading').style.display = 'none';
+                    this.showToast('Failed to connect to AI Service. / AI सेवा से कनेक्ट नहीं हो सका।');
+                }
+            }
+
+            // --- Marketplace Functionality ---
+            cropListings = [
+                { id: 1, crop: 'Wheat (Gehu)', qty: 500, price: 28, location: 'Bhopal, MP', seller: 'Ramesh Kumar', date: '2 hours ago' },
+                { id: 2, crop: 'Rice (Dhan)', qty: 1000, price: 35, location: 'Indore, MP', seller: 'Sunil Patel', date: '5 hours ago' },
+                { id: 3, crop: 'Mustard (Sarson)', qty: 300, price: 52, location: 'Jaipur, RJ', seller: 'Geeta Devi', date: '1 day ago' },
+                { id: 4, crop: 'Cotton (Kapas)', qty: 800, price: 65, location: 'Ahmedabad, GJ', seller: 'Mohan Singh', date: '1 day ago' },
+                { id: 5, crop: 'Sugarcane (Ganna)', qty: 2000, price: 3, location: 'Lucknow, UP', seller: 'Hari Prasad', date: '3 days ago' },
+                { id: 6, crop: 'Maize (Makka)', qty: 600, price: 22, location: 'Patna, Bihar', seller: 'Anita Kumari', date: '3 days ago' }
+            ];
+
+            carbonListings = [
+                { id: 1, type: 'Tree Planting', desc: 'Planted 200 neem trees on farmland', credits: 50, price: 450, farmer: 'Rajesh Sharma', date: '1 day ago', icon: '🌳' },
+                { id: 2, type: 'Organic Farming', desc: 'Complete organic wheat cultivation - 5 acres', credits: 30, price: 600, farmer: 'Sunita Verma', date: '2 days ago', icon: '🌿' },
+                { id: 3, type: 'Solar Usage', desc: 'Solar-powered irrigation for 10 acres', credits: 25, price: 500, farmer: 'Mohan Patel', date: '3 days ago', icon: '☀️' },
+                { id: 4, type: 'Water Conservation', desc: 'Drip irrigation system covering 8 acres', credits: 20, price: 400, farmer: 'Anjali Tiwari', date: '5 days ago', icon: '💧' }
+            ];
+
+            showCropTab(tab) {
+                const browseTab = document.getElementById('crop-browse-tab');
+                const sellTab = document.getElementById('crop-sell-tab');
+                const browseSection = document.getElementById('crop-browse-section');
+                const sellSection = document.getElementById('crop-sell-section');
+
+                if (tab === 'browse') {
+                    browseTab.classList.add('active');
+                    sellTab.classList.remove('active');
+                    browseSection.style.display = 'block';
+                    sellSection.style.display = 'none';
+                    this.renderCropListings();
+                } else {
+                    browseTab.classList.remove('active');
+                    sellTab.classList.add('active');
+                    browseSection.style.display = 'none';
+                    sellSection.style.display = 'block';
+                }
+            }
+
+            showCarbonTab(tab) {
+                const browseTab = document.getElementById('carbon-browse-tab');
+                const uploadTab = document.getElementById('carbon-upload-tab');
+                const browseSection = document.getElementById('carbon-browse-section');
+                const uploadSection = document.getElementById('carbon-upload-section');
+
+                if (tab === 'browse') {
+                    browseTab.classList.add('active');
+                    uploadTab.classList.remove('active');
+                    browseSection.style.display = 'block';
+                    uploadSection.style.display = 'none';
+                    this.renderCarbonListings();
+                } else {
+                    browseTab.classList.remove('active');
+                    uploadTab.classList.add('active');
+                    browseSection.style.display = 'none';
+                    uploadSection.style.display = 'block';
+                }
+            }
+
+            renderCropListings() {
+                const container = document.getElementById('crop-listings-container');
+                if (!container) return;
+                container.innerHTML = this.cropListings.map(item => `
+                    <div class="mp-listing-card">
+                        <div class="mp-listing-header">
+                            <span class="mp-listing-crop">🌾 ${item.crop}</span>
+                            <span class="mp-listing-date">${item.date}</span>
+                        </div>
+                        <div class="mp-listing-body">
+                            <div class="mp-listing-row"><strong>⚖️ Qty:</strong> ${item.qty} Kg</div>
+                            <div class="mp-listing-row"><strong>💰 Price:</strong> ₹${item.price}/Kg</div>
+                            <div class="mp-listing-row"><strong>📍 Location:</strong> ${item.location}</div>
+                            <div class="mp-listing-row"><strong>👤 Seller:</strong> ${item.seller}</div>
+                        </div>
+                        <div class="mp-listing-footer">
+                            <span class="mp-listing-total">Total: ₹${(item.qty * item.price).toLocaleString()}</span>
+                            <button class="mp-contact-btn" onclick="app.showToast('📞 Contact sent to ${item.seller}')">📞 Contact</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderCarbonListings() {
+                const container = document.getElementById('carbon-listings-container');
+                if (!container) return;
+                container.innerHTML = this.carbonListings.map(item => `
+                    <div class="mp-listing-card" style="border-left-color: var(--accent-blue);">
+                        <div class="mp-listing-header" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);">
+                            <span class="mp-listing-crop">${item.icon} ${item.type}</span>
+                            <span class="mp-listing-date">${item.date}</span>
+                        </div>
+                        <div class="mp-listing-body">
+                            <div class="mp-listing-row"><strong>📝 Activity:</strong> ${item.desc}</div>
+                            <div class="mp-listing-row"><strong>💚 Credits:</strong> ${item.credits} credits</div>
+                            <div class="mp-listing-row"><strong>💰 Price:</strong> ₹${item.price}/credit</div>
+                            <div class="mp-listing-row"><strong>👤 Farmer:</strong> ${item.farmer}</div>
+                        </div>
+                        <div class="mp-listing-footer">
+                            <span class="mp-listing-total">Total: ₹${(item.credits * item.price).toLocaleString()}</span>
+                            <button class="mp-contact-btn" style="background: var(--accent-blue);" onclick="app.showToast('💚 Purchase request sent to ${item.farmer}')">🛒 Buy Credits</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            addCropListing() {
+                const name = document.getElementById('sell-crop-name').value;
+                const qty = document.getElementById('sell-crop-qty').value;
+                const price = document.getElementById('sell-crop-price').value;
+                const location = document.getElementById('sell-crop-location').value;
+
+                if (!name || !qty || !price || !location) {
+                    this.showToast('Please fill all fields');
+                    return;
+                }
+
+                this.cropListings.unshift({
+                    id: this.cropListings.length + 1,
+                    crop: name,
+                    qty: parseInt(qty),
+                    price: parseInt(price),
+                    location: location,
+                    seller: this.currentUser ? this.currentUser.full_name : 'You',
+                    date: 'Just now'
+                });
+
+                document.getElementById('sell-crop-name').value = '';
+                document.getElementById('sell-crop-qty').value = '';
+                document.getElementById('sell-crop-price').value = '';
+                document.getElementById('sell-crop-location').value = '';
+
+                this.showToast('✅ Crop listing posted successfully!');
+                this.showCropTab('browse');
+            }
+
+            addCarbonListing() {
+                const type = document.getElementById('carbon-activity-type').value;
+                const desc = document.getElementById('carbon-activity-desc').value;
+                const credits = document.getElementById('carbon-credits').value;
+                const price = document.getElementById('carbon-price').value;
+
+                if (!type || !desc || !credits || !price) {
+                    this.showToast('Please fill all fields');
+                    return;
+                }
+
+                const typeNames = {
+                    tree_planting: 'Tree Planting',
+                    organic_farming: 'Organic Farming',
+                    solar_usage: 'Solar Usage',
+                    water_conservation: 'Water Conservation',
+                    waste_management: 'Waste Management'
+                };
+                const typeIcons = {
+                    tree_planting: '🌳',
+                    organic_farming: '🌿',
+                    solar_usage: '☀️',
+                    water_conservation: '💧',
+                    waste_management: '♻️'
+                };
+
+                this.carbonListings.unshift({
+                    id: this.carbonListings.length + 1,
+                    type: typeNames[type] || type,
+                    desc: desc,
+                    credits: parseInt(credits),
+                    price: parseInt(price),
+                    farmer: this.currentUser ? this.currentUser.full_name : 'You',
+                    date: 'Just now',
+                    icon: typeIcons[type] || '🌱'
+                });
+
+                document.getElementById('carbon-activity-type').value = '';
+                document.getElementById('carbon-activity-desc').value = '';
+                document.getElementById('carbon-credits').value = '';
+                document.getElementById('carbon-price').value = '';
+
+                this.showToast('✅ Carbon activity posted successfully!');
+                this.showCarbonTab('browse');
+            }
+
+            showToast(message) {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+                const toast = document.createElement('div');
+                toast.className = 'toast show';
+                toast.innerText = message;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+        }
+
+        window.app = new App();
+    </script>
+</body>
+
+</html>

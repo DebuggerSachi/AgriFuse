@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarbonAid - Sustainable Farming & Carbon Credits</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #15803d;
+            --primary-dark: #14532d;
+            --accent: #22c55e;
+            --light: #f0fdf4;
+            --text: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: white;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .hero {
+            padding: 6rem 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--light) 0%, #fff 100%);
+            min-height: 80vh;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            color: var(--primary-dark);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .hero-image img {
+            width: 90%;
+            border-radius: 2rem;
+            box-shadow: 0 20px 50px rgba(21, 128, 61, 0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-farmer {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-industry {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            padding: 6rem 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            padding: 2.5rem;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--light);
+            text-align: center;
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-dark);
+        }
+
+        .how-it-works {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .how-it-works h2 {
+            color: white;
+        }
+
+        .footer {
+            padding: 3rem 5%;
+            text-align: center;
+            background: var(--light);
+            color: #64748b;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 3rem;
+            }
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .btn-group {
+                justify-content: center;
+                flex-direction: column;
+            }
+            .hero-image {
+                margin-top: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-leaf"></i> CarbonAid
+        </a>
+        <div class="nav-links" style="display: flex; gap: 15px; align-items: center;">
+            <a href="/" class="btn btn-industry" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #64748b; color: #64748b;">← Back to AgriFuse</a>
+            <a href="/carbonaid/farmer/login" class="btn btn-farmer" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Sign In</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Earn Carbon Credits Through Sustainable Farming</h1>
+            <p>Join the green revolution. Plant trees, capture CO2, and get rewarded with tradable carbon credits.</p>
+            <div class="btn-group">
+                <a href="/carbonaid/farmer/register" class="btn btn-farmer">Farmer Portal</a>
+                <a href="/carbonaid/industry/register" class="btn btn-industry">Industry Portal</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Sustainable Farming">
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-title">
+            <h2>Why CarbonAid?</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-tree"></i>
+                <h3>For Farmers</h3>
+                <p>Monetize your sustainable practices. Turn every tree you plant into a financial asset through carbon credits.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-industry"></i>
+                <h3>For Industries</h3>
+                <p>Meet your CSR goals and regulatory requirements by purchasing verified carbon credits from local farmers.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-globe-americas"></i>
+                <h3>For the Planet</h3>
+                <p>Together, we can reduce the global carbon footprint and restore our ecosystem for future generations.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section how-it-works">
+        <div class="section-title">
+            <h2>How It Works</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card" style="background: rgba(255,255,255,0.1); border: none;">
+                <h3 style="color: white;">1. Plant & Log</h3>
+                <p style="color: #cbd5e1;">Farmers plant trees and log their activities on our platform with proof of growth.</p>
+            </div>
+            <div class="feature-card" style="background: rgba(255,255,255,0.1); border: none;">
+                <h3 style="color: white;">2. Earn Credits</h3>
+                <p style="color: #cbd5e1;">Our platform automatically calculates CO2 absorption and issues carbon credits.</p>
+            </div>
+            <div class="feature-card" style="background: rgba(255,255,255,0.1); border: none;">
+                <h3 style="color: white;">3. Exchange</h3>
+                <p style="color: #cbd5e1;">Industries buy these credits on our marketplace, providing direct income to farmers.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2024 CarbonAid Platform | Part of AgriFuse Unified Digital Farming</p>
+    </footer>
+</body>
+</html>

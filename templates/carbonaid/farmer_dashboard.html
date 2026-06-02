@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard | CarbonAid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #15803d;
+            --secondary: #f0fdf4;
+            --accent: #22c55e;
+            --dark: #14532d;
+            --sidebar-width: 260px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; display: flex; }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--dark);
+            color: white;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .nav-menu { list-style: none; flex: 1; }
+        .nav-item { margin-bottom: 0.5rem; }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 1rem;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .stat-label { color: #64748b; font-size: 0.9rem; font-weight: 600; }
+
+        /* Activity Form */
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 0.9rem; }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* History Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th { text-align: left; padding: 1rem; background: #f8fafc; color: #64748b; font-size: 0.9rem; }
+        td { padding: 1rem; border-top: 1px solid #f1f5f9; font-size: 0.95rem; }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); width: 0; padding: 0; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-leaf"></i> CarbonAid
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="nav-link active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+            <li class="nav-item"><a href="/carbonaid/marketplace" class="nav-link"><i class="fas fa-store"></i> Marketplace</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-history"></i> My Activities</a></li>
+            <li class="nav-item" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                <a href="/" class="nav-link"><i class="fas fa-arrow-left"></i> AgriFuse Home</a>
+            </li>
+        </ul>
+        <div class="nav-item">
+            <a href="/carbonaid/logout" class="nav-link" style="color: #fca5a5;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Farmer Dashboard</h1>
+            <div class="user-profile">
+                <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--primary);"></i>
+                <span style="font-weight: 700;">{{ farmer }}</span>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-value">{{ stats.trees }}</span>
+                <span class="stat-label">Trees Planted</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ stats.co2 }} kg</span>
+                <span class="stat-label">CO2 Captured</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">{{ stats.credits }}</span>
+                <span class="stat-label">Carbon Credits</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value">₹{{ stats.earnings }}</span>
+                <span class="stat-label">Estimated Earnings</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><i class="fas fa-plus-circle"></i> Log New Plantation Activity</div>
+            <form id="activityForm">
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Tree Type</label>
+                        <select id="tree_type" required>
+                            <option value="Neem">Neem</option>
+                            <option value="Banyan">Banyan</option>
+                            <option value="Mango">Mango</option>
+                            <option value="Teak">Teak</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Number of Trees</label>
+                        <input type="number" id="count" placeholder="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Upload Proof (Leaf/Tree Image)</label>
+                        <input type="file" id="image" accept="image/*" required>
+                    </div>
+                    <div style="display: flex; align-items: flex-end; margin-bottom: 1rem;">
+                        <button type="submit" class="btn-primary">Add Activity</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><i class="fas fa-list"></i> Activity History</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Tree Type</th>
+                        <th>Count</th>
+                        <th>CO2 (kg)</th>
+                        <th>Credits</th>
+                        <th>Proof</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in activities %}
+                    <tr>
+                        <td>{{ activity.date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ activity.tree_type }}</td>
+                        <td>{{ activity.count }}</td>
+                        <td>{{ activity.carbon_kg }}</td>
+                        <td>{{ activity.credits|round(2) }}</td>
+                        <td>
+                            <a href="{{ activity.image_url }}" target="_blank">
+                                <img src="{{ activity.image_url }}" alt="Proof" style="height: 40px; border-radius: 4px; border: 1px solid #ddd;">
+                            </a>
+                        </td>
+                        <td>
+                            {% if activity.credits > 0 %}
+                            <span style="color: #22c55e; font-weight: 600;">Listed</span>
+                            {% else %}
+                            <span style="color: #64748b;">Sold</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #64748b;">No activities logged yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('activityForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('tree_type', document.getElementById('tree_type').value);
+            formData.append('count', document.getElementById('count').value);
+            formData.append('image', document.getElementById('image').files[0]);
+
+            try {
+                const res = await fetch('/carbonaid/api/activity', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+                if (result.success) {
+                    location.reload();
+                } else {
+                    alert(result.message);
+                }
+            } catch (err) {
+                alert('An error occurred.');
+            }
+        });
+    </script>
+</body>
+</html>

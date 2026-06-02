@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Industry Dashboard | CarbonAid</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #22c55e;
+            --light: #f8fafc;
+            --sidebar-width: 260px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--light); display: flex; }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary);
+            color: white;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 3rem;
+        }
+
+        .nav-menu { list-style: none; flex: 1; }
+        .nav-item { margin-bottom: 0.5rem; }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.8rem 1rem;
+            color: #94a3b8;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: #f1f5f9;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .stat-info h3 { font-size: 2rem; font-weight: 800; color: var(--primary); margin-bottom: 5px; }
+        .stat-info p { color: #64748b; font-weight: 600; font-size: 0.9rem; }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1.2rem; background: #f8fafc; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 1.2rem; border-top: 1px solid #f1f5f9; color: #1e293b; font-weight: 500; }
+
+        .btn-marketplace {
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-marketplace:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-leaf" style="color: var(--accent);"></i> CarbonAid
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="nav-link active"><i class="fas fa-chart-pie"></i> Overview</a></li>
+            <li class="nav-item"><a href="/carbonaid/marketplace" class="nav-link"><i class="fas fa-shopping-cart"></i> Buy Credits</a></li>
+            <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-file-invoice"></i> Reports</a></li>
+            <li class="nav-item" style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                <a href="/" class="nav-link"><i class="fas fa-arrow-left"></i> AgriFuse Home</a>
+            </li>
+        </ul>
+        <div class="nav-item">
+            <a href="/carbonaid/logout" class="nav-link" style="color: #fca5a5;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div>
+                <h1>Welcome, {{ industry }}</h1>
+                <p style="color: #64748b;">Manage your carbon offsetting commitments</p>
+            </div>
+            <a href="/carbonaid/marketplace" class="btn-marketplace">
+                <i class="fas fa-plus"></i> Buy New Credits
+            </a>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-certificate"></i></div>
+                <div class="stat-info">
+                    <h3>{{ stats.purchased }}</h3>
+                    <p>Total Credits Purchased</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-cloud-download-alt"></i></div>
+                <div class="stat-info">
+                    <h3>{{ stats.offset }} kg</h3>
+                    <p>Emissions Offset (CO2)</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-info">
+                    <h3>Verified</h3>
+                    <p>Compliance Status</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Purchase History</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Farmer Name</th>
+                        <th>Credits</th>
+                        <th>Amount Paid</th>
+                        <th>Proof</th>
+                        <th>Certificate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchase in purchases %}
+                    <tr>
+                        <td>{{ purchase.date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ purchase.farmer_name }}</td>
+                        <td>{{ purchase.credits|round(2) }} Units</td>
+                        <td>₹{{ purchase.amount|round(2) }}</td>
+                        <td>
+                            <a href="{{ purchase.image_url }}" target="_blank">
+                                <img src="{{ purchase.image_url }}" alt="Proof" style="height: 40px; border-radius: 4px; border: 1px solid #ddd;">
+                            </a>
+                        </td>
+                        <td><a href="#" style="color: var(--accent);"><i class="fas fa-file-pdf"></i> Download</a></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #64748b; padding: 3rem;">No purchases yet. Start offsetting today!</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
